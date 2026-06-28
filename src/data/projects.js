@@ -1,0 +1,38 @@
+export const projects = [
+  {
+    id: 'claudiarpc-go',
+    name: 'ClaudiaRPC (Go)',
+    tagline: 'A sleek Discord Rich Presence gateway',
+    description: 'Web-based Discord Rich Presence tool built in Go with a Chi router and vanilla JS frontend. Profile save/load, external image URL resolution, and a glassmorphism UI.',
+    tech: ['Go', 'Chi', 'JavaScript', 'Discord RPC'],
+    liveUrl: 'https://rpc.claudia.web.id',
+    githubUrl: 'https://github.com/Zaineedyou/ClaudiaRPC',
+  },
+  {
+    id: 'claudiarpc-rust',
+    name: 'ClaudiaRPC (Rust)',
+    tagline: 'The Rust rewrite — faster, leaner',
+    description: 'A Rust reimplementation of ClaudiaRPC. Same feature set, rebuilt from the ground up for performance and as an exercise in systems-level thinking.',
+    tech: ['Rust', 'Discord RPC', 'WebUI'],
+    liveUrl: null,
+    githubUrl: 'https://github.com/Zaineedyou/ClaudiaRPC-Rust',
+  },
+  {
+    id: 'cainego',
+    name: 'CaineGO',
+    tagline: 'LLM-powered Discord bot',
+    description: 'A Discord bot with Groq API integration, moderation commands, automod, warning systems, per-channel memory, logging, slash commands, and a roleplay persona.',
+    tech: ['Go', 'Discord', 'Groq API'],
+    liveUrl: null,
+    githubUrl: 'https://github.com/Zaineedyou/CaineGO',
+  },
+  {
+    id: 'cainemp',
+    name: 'CaineMP',
+    tagline: 'Android music player app',
+    description: 'A native Android music player app built with Kotlin and C++. Clean UI, local library management, and optimized audio playback.',
+    tech: ['Kotlin', 'C++', 'Android', 'CMake'],
+    liveUrl: null,
+    githubUrl: 'https://github.com/Zaineedyou/CaineMP',
+  },
+];
