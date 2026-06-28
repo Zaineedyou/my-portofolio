@@ -23,7 +23,7 @@ export const projects = [
     tagline: 'LLM-powered Discord bot',
     description: 'A Discord bot with Groq API integration, moderation commands, automod, warning systems, per-channel memory, logging, and slash commands.',
     tech: ['Go', 'Discord', 'Groq API'],
-    liveUrl: https://discord.com/oauth2/authorize?client_id=1520662921691136134,
+    liveUrl: 'https://discord.com/oauth2/authorize?client_id=1520662921691136134',
     githubUrl: 'https://github.com/Zaineedyou/CaineGO',
   },
   {
