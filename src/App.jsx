@@ -1,5 +1,6 @@
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { TechStack } from './components/TechStack';
 import { Projects } from './components/Projects';
 import { Contact } from './components/Contact';
 import { TargetCursor } from './components/TargetCursor';
@@ -15,6 +16,9 @@ export function App() {
       <main id="main-content" className="pt-16">
         <Hero />
         <SectionReveal>
+          <TechStack />
+        </SectionReveal>
+        <SectionReveal>
           <Projects />
         </SectionReveal>
         <SectionReveal>
@@ -24,3 +28,4 @@ export function App() {
     </div>
   );
 }
+
