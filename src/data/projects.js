@@ -29,10 +29,19 @@ export const projects = [
   {
     id: 'cainemp',
     name: 'CaineMP',
-    tagline: 'Android music player app',
+    tagline: 'Android music player app (Discontinued)',
     description: 'A native Android music player app built with Kotlin and C++. Clean UI, local library management, and optimized audio playback.',
     tech: ['Kotlin', 'C++', 'Android', 'CMake'],
     liveUrl: null,
     githubUrl: 'https://github.com/Zaineedyou/CaineMP',
+  },
+  {
+    id: 'coming-soon',
+    name: 'Coming Soon',
+    tagline: 'Something is cooking...',
+    description: 'Next project in progress. Stay tuned.',
+    tech: ['???'],
+    liveUrl: null,
+    githubUrl: null,
   },
 ];
