@@ -42,7 +42,7 @@ export function LoadingScreen() {
                 lineHeight: 1,
               }}
             >
-              Claudia
+              Zaineedyou
             </motion.h1>
             <motion.div
               initial={{ scaleX: 0 }}
