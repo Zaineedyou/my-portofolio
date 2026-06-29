@@ -1,5 +1,5 @@
 export const personal = {
-  name: 'Claudia',
+  name: 'Zaineedyou',
   tagline: 'Fullstack Dev & Engineering Architect',
   subtitle: "I build things that I find interesting — backends, bots, tools, whatever catches my attention.",
   github: 'https://github.com/Zaineedyou',
