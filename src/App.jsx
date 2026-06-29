@@ -2,6 +2,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { TechStack } from './components/TechStack';
 import { Projects } from './components/Projects';
+import { VibeSection } from './components/VibeSection';
 import { Contact } from './components/Contact';
 import { TargetCursor } from './components/TargetCursor';
 import { SectionReveal } from './helpers/SectionReveal';
@@ -22,10 +23,12 @@ export function App() {
           <Projects />
         </SectionReveal>
         <SectionReveal>
+          <VibeSection />
+        </SectionReveal>
+        <SectionReveal>
           <Contact />
         </SectionReveal>
       </main>
     </div>
   );
 }
-
