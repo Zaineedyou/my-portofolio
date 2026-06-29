@@ -23,7 +23,8 @@ function VinylPlayer() {
 
   useEffect(() => {
     audioRef.current = new Audio('/Number One For Me - Maher Zain.mp3');
-    audioRef.current.loop = true;
+    audioRef.current.loop = false;
+    audioRef.current.addEventListener('ended', () => setPlaying(false));
     return () => {
       audioRef.current.pause();
       audioRef.current = null;
@@ -31,9 +32,31 @@ function VinylPlayer() {
   }, []);
 
   useEffect(() => {
-    if (!audioRef.current) return;
-    if (playing) audioRef.current.play();
-    else audioRef.current.pause();
+    const audio = audioRef.current;
+    if (!audio) return;
+    let frame;
+    if (playing) {
+      audio.volume = 0;
+      audio.play();
+      const fadeIn = () => {
+        if (audio.volume < 1) {
+          audio.volume = Math.min(1, audio.volume + 0.02);
+          frame = requestAnimationFrame(fadeIn);
+        }
+      };
+      frame = requestAnimationFrame(fadeIn);
+    } else {
+      const fadeOut = () => {
+        if (audio.volume > 0) {
+          audio.volume = Math.max(0, audio.volume - 0.02);
+          frame = requestAnimationFrame(fadeOut);
+        } else {
+          audio.pause();
+        }
+      };
+      frame = requestAnimationFrame(fadeOut);
+    }
+    return () => cancelAnimationFrame(frame);
   }, [playing]);
 
   useEffect(() => {
@@ -212,3 +235,4 @@ export function VibeSection() {
     </section>
   );
 }
+
