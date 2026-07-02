@@ -1,76 +1,82 @@
 import { useState, useEffect } from 'react';
-import { Tilt } from 'react-tilt';
 import { ArrowSquareOut, GithubLogo } from '@phosphor-icons/react';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-
-const tiltOptions = { max: 8, scale: 1, speed: 300 };
+import BorderGlow from './BorderGlow';
 
 export function ProjectCard({ project }) {
   const [canHover, setCanHover] = useState(true);
-  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setCanHover(window.matchMedia('(hover: hover)').matches);
   }, []);
 
-  const enableTilt = canHover && !prefersReducedMotion;
-
-  const cardContent = (
-    <div
-      role="article"
-      className="cursor-target bg-bg-surface border border-zinc-800 rounded-2xl p-6 h-full transition-all duration-200 hover:border-accent-500/30 hover:-translate-y-[2px] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.4)] hover:shadow-[0_24px_48px_-12px_rgba(232,51,107,0.1)]"
+  return (
+    <BorderGlow
+      animated
+      backgroundColor="#13131a"
+      borderRadius={16}
+      glowColor="340 80 70"
+      glowIntensity={1.5}
+      colors={['#e8336b', '#ff80a8', '#c084fc']}
+      edgeSensitivity={21}
+      glowRadius={28}
+      coneSpread={25}
+      className="h-full"
     >
-      <p className="font-mono text-xs text-accent-400 mb-2 tracking-wide uppercase">
-        {project.name}
-      </p>
+      <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: '#ff80a8', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '8px' }}>
+          {project.name}
+        </p>
 
-      <p className="text-lg font-semibold text-text-primary leading-snug mb-3">
-        {project.tagline}
-      </p>
+        <p style={{ fontSize: '17px', fontWeight: 600, color: '#f5f0ff', lineHeight: 1.3, marginBottom: '12px' }}>
+          {project.tagline}
+        </p>
 
-      <p className="text-sm text-text-secondary mb-5 leading-relaxed">
-        {project.description}
-      </p>
+        <p style={{ fontSize: '13px', color: '#9d97b0', lineHeight: 1.7, marginBottom: '20px', flex: 1 }}>
+          {project.description}
+        </p>
 
-      <div className="flex flex-wrap gap-2 mb-5">
-        {project.tech.map((tech) => (
-          <span
-            key={tech}
-            className="px-2.5 py-1 rounded-md bg-zinc-800/60 border border-zinc-700/40 font-mono text-xs text-text-caption"
-          >
-            {tech}
-          </span>
-        ))}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+          {project.tech.map((tech) => (
+            <span
+              key={tech}
+              style={{
+                padding: '4px 10px',
+                borderRadius: '6px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '11px',
+                color: '#5c5875',
+              }}
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: '16px' }}>
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#ff80a8', fontWeight: 500, textDecoration: 'none' }}
+            >
+              Live <ArrowSquareOut size={13} />
+            </a>
+          )}
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#5c5875', fontWeight: 500, textDecoration: 'none' }}
+            >
+              <GithubLogo size={13} /> Source
+            </a>
+          )}
+        </div>
       </div>
-
-      <div className="flex gap-4">
-        {project.liveUrl && (
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cursor-target inline-flex items-center gap-1.5 text-sm text-accent-300 font-medium hover:text-accent-200 transition-colors"
-          >
-            Live <ArrowSquareOut size={14} />
-          </a>
-        )}
-        {project.githubUrl && (
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cursor-target inline-flex items-center gap-1.5 text-sm text-text-caption font-medium hover:text-text-secondary transition-colors"
-          >
-            <GithubLogo size={14} /> Source
-          </a>
-        )}
-      </div>
-    </div>
+    </BorderGlow>
   );
-
-  if (enableTilt) {
-    return <Tilt options={tiltOptions}>{cardContent}</Tilt>;
-  }
-
-  return cardContent;
 }
