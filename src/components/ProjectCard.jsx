@@ -15,7 +15,7 @@ export function ProjectCard({ project }) {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
       <BorderGlow
-        animated={inView}
+        animated={false}
         backgroundColor="#13131a"
         borderRadius={16}
         glowColor="340 80 70"

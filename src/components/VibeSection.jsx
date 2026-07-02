@@ -66,7 +66,7 @@ function VinylPlayer({ inView }) {
 
   return (
     <BorderGlow
-      animated={inView}
+      animated={false}
       backgroundColor="#13131a"
       borderRadius={20}
       glowColor="340 80 70"
@@ -161,7 +161,7 @@ export function VibeSection() {
             transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             <BorderGlow
-              animated={quoteInView}
+              animated={false}
               backgroundColor="#13131a"
               borderRadius={20}
               glowColor="340 80 70"
