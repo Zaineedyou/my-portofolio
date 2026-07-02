@@ -5,7 +5,6 @@ import BorderGlow from './BorderGlow';
 const SONG = {
   title: 'Number One For Me',
   artist: 'Maher Zain',
-  album: 'One (2012)',
   color: '#c8a97e',
 };
 
@@ -14,7 +13,7 @@ const QUOTE = {
   author: '— Zain',
 };
 
-function VinylPlayer({ inView }) {
+function VinylPlayer() {
   const [playing, setPlaying] = useState(false);
   const rotateRef = useRef(0);
   const rafRef = useRef(null);
@@ -25,10 +24,7 @@ function VinylPlayer({ inView }) {
     audioRef.current = new Audio('/Number One For Me - Maher Zain.mp3');
     audioRef.current.loop = false;
     audioRef.current.addEventListener('ended', () => setPlaying(false));
-    return () => {
-      audioRef.current.pause();
-      audioRef.current = null;
-    };
+    return () => { audioRef.current.pause(); audioRef.current = null; };
   }, []);
 
   useEffect(() => {
@@ -65,74 +61,61 @@ function VinylPlayer({ inView }) {
   }, [playing]);
 
   return (
-    <BorderGlow
-      animated={false}
-      backgroundColor="#13131a"
-      borderRadius={20}
-      glowColor="340 80 70"
-      glowIntensity={1.5}
-      colors={['#e8336b', '#ff80a8', '#c084fc']}
-      edgeSensitivity={21}
-      glowRadius={28}
-      coneSpread={25}
-    >
-      <div style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative', width: '160px', height: '160px' }}>
-          <div
-            ref={diskRef}
-            onClick={() => setPlaying(!playing)}
-            style={{
-              width: '160px', height: '160px', borderRadius: '50%',
-              background: `radial-gradient(circle at 50% 50%, #2a1a0e 0%, #1a1008 18%, #3d2b1a 19%, #1a1008 20%, #3d2b1a 35%, #1a1008 36%, #3d2b1a 50%, #1a1008 51%, #3d2b1a 65%, #1a1008 66%, #3d2b1a 80%, #1a1008 81%, #2a1a0e 100%)`,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: `radial-gradient(circle, ${SONG.color} 0%, #8b6914 60%, #5a4209 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
-              <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#1a1008' }} />
-            </div>
-          </div>
-          <div style={{
-            position: 'absolute', top: '-8px', right: '-8px',
-            width: '4px', height: '64px',
-            background: 'linear-gradient(to bottom, #aaa 0%, #888 60%, #e8336b 100%)',
-            borderRadius: '2px', transformOrigin: 'top center',
-            transform: playing ? 'rotate(28deg)' : 'rotate(15deg)',
-            transition: 'transform 0.5s ease',
-          }} />
-        </div>
-
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '4px' }}>
-            <motion.div
-              animate={playing ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
-              transition={{ duration: 1.2, repeat: Infinity }}
-              style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#e8336b' }}
-            />
-            <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '10px', color: '#ff80a8', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
-              {playing ? 'now playing' : 'paused'}
-            </p>
-          </div>
-          <p style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: '15px', fontWeight: 600, color: '#f5f0ff', margin: '0 0 2px' }}>{SONG.title}</p>
-          <p style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: '13px', color: '#9d97b0', margin: 0 }}>{SONG.artist}</p>
-        </div>
-
-        <button
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+      <div style={{ position: 'relative', width: '160px', height: '160px' }}>
+        <div
+          ref={diskRef}
           onClick={() => setPlaying(!playing)}
           style={{
-            padding: '8px 24px', borderRadius: '99px',
-            background: playing ? 'rgba(232,51,107,0.1)' : '#e8336b',
-            border: playing ? '1px solid #e8336b' : 'none',
-            color: playing ? '#e8336b' : '#fff',
-            fontFamily: 'Space Grotesk, sans-serif', fontSize: '13px', fontWeight: 600,
-            cursor: 'pointer', transition: 'all 0.2s',
+            width: '160px', height: '160px', borderRadius: '50%',
+            background: `radial-gradient(circle at 50% 50%, #2a1a0e 0%, #1a1008 18%, #3d2b1a 19%, #1a1008 20%, #3d2b1a 35%, #1a1008 36%, #3d2b1a 50%, #1a1008 51%, #3d2b1a 65%, #1a1008 66%, #3d2b1a 80%, #1a1008 81%, #2a1a0e 100%)`,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
           }}
         >
-          {playing ? '⏸ Pause' : '▶ Play'}
-        </button>
+          <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: `radial-gradient(circle, ${SONG.color} 0%, #8b6914 60%, #5a4209 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
+            <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#1a1008' }} />
+          </div>
+        </div>
+        <div style={{
+          position: 'absolute', top: '-8px', right: '-8px',
+          width: '4px', height: '64px',
+          background: 'linear-gradient(to bottom, #aaa 0%, #888 60%, #e8336b 100%)',
+          borderRadius: '2px', transformOrigin: 'top center',
+          transform: playing ? 'rotate(28deg)' : 'rotate(15deg)',
+          transition: 'transform 0.5s ease',
+        }} />
       </div>
-    </BorderGlow>
+
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '4px' }}>
+          <motion.div
+            animate={playing ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+            style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#e8336b' }}
+          />
+          <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '10px', color: '#ff80a8', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
+            {playing ? 'now playing' : 'paused'}
+          </p>
+        </div>
+        <p style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: '15px', fontWeight: 600, color: '#f5f0ff', margin: '0 0 2px' }}>{SONG.title}</p>
+        <p style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: '13px', color: '#9d97b0', margin: 0 }}>{SONG.artist}</p>
+      </div>
+
+      <button
+        onClick={() => setPlaying(!playing)}
+        style={{
+          padding: '8px 24px', borderRadius: '99px',
+          background: playing ? 'rgba(232,51,107,0.1)' : '#e8336b',
+          border: playing ? '1px solid #e8336b' : 'none',
+          color: playing ? '#e8336b' : '#fff',
+          fontFamily: 'Space Grotesk, sans-serif', fontSize: '13px', fontWeight: 600,
+          cursor: 'pointer', transition: 'all 0.2s',
+        }}
+      >
+        {playing ? '⏸ Pause' : '▶ Play'}
+      </button>
+    </div>
   );
 }
 
@@ -141,27 +124,30 @@ export function VibeSection() {
   const inView = useInView(ref, { once: false, margin: '0px 0px -60px 0px' });
   const quoteRef = useRef(null);
   const quoteInView = useInView(quoteRef, { once: false, margin: '0px 0px -60px 0px' });
+  const [quoteAnimated, setQuoteAnimated] = useState(false);
 
   return (
     <section style={{ borderTop: '1px solid rgba(255,255,255,0.04)', padding: '96px 0' }}>
       <div className="max-w-5xl mx-auto px-6 md:px-10">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', alignItems: 'center' }}
-        >
-          <VinylPlayer inView={inView} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', alignItems: 'center' }}>
+          <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <VinylPlayer />
+          </motion.div>
 
           <motion.div
             ref={quoteRef}
             initial={{ opacity: 0, y: 24 }}
             animate={quoteInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
             transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            onAnimationComplete={() => { if (quoteInView && !quoteAnimated) setQuoteAnimated(true); }}
           >
             <BorderGlow
-              animated={false}
+              animated={quoteInView && !quoteAnimated}
               backgroundColor="#13131a"
               borderRadius={20}
               glowColor="340 80 70"
@@ -182,7 +168,7 @@ export function VibeSection() {
               </div>
             </BorderGlow>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

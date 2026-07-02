@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'motion/react';
 import BorderGlow from './BorderGlow';
 
@@ -12,6 +12,7 @@ const stack = [
 function TechCard({ category, items, index }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: false, margin: '0px 0px -50px 0px' });
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   return (
     <motion.div
@@ -19,9 +20,10 @@ function TechCard({ category, items, index }) {
       initial={{ opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      onAnimationComplete={() => { if (inView && !hasAnimated) setHasAnimated(true); }}
     >
       <BorderGlow
-        animated={false}
+        animated={inView && !hasAnimated}
         backgroundColor="#13131a"
         borderRadius={16}
         glowColor="340 80 70"
@@ -37,18 +39,7 @@ function TechCard({ category, items, index }) {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {items.map((item) => (
-              <span
-                key={item}
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: '6px',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '12px',
-                  color: '#9d97b0',
-                }}
-              >
+              <span key={item} style={{ padding: '5px 12px', borderRadius: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', fontFamily: 'JetBrains Mono, monospace', fontSize: '12px', color: '#9d97b0' }}>
                 {item}
               </span>
             ))}
@@ -73,14 +64,9 @@ export function TechStack() {
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           style={{ marginBottom: '40px' }}
         >
-          <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: '#ff80a8', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            tech stack
-          </p>
-          <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.02em', color: '#f5f0ff', margin: 0 }}>
-            Tools I work with
-          </h2>
+          <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px', color: '#ff80a8', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>tech stack</p>
+          <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.02em', color: '#f5f0ff', margin: 0 }}>Tools I work with</h2>
         </motion.div>
-
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
           {stack.map((group, i) => (
             <TechCard key={group.category} category={group.category} items={group.items} index={i} />

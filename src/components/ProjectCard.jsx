@@ -1,11 +1,13 @@
-import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { useInView } from 'motion/react';
+import { motion } from 'motion/react';
 import { ArrowSquareOut, GithubLogo } from '@phosphor-icons/react';
 import BorderGlow from './BorderGlow';
 
 export function ProjectCard({ project }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: false, margin: '0px 0px -50px 0px' });
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   return (
     <motion.div
@@ -13,9 +15,10 @@ export function ProjectCard({ project }) {
       initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      onAnimationComplete={() => { if (inView && !hasAnimated) setHasAnimated(true); }}
     >
       <BorderGlow
-        animated={false}
+        animated={inView && !hasAnimated}
         backgroundColor="#13131a"
         borderRadius={16}
         glowColor="340 80 70"
