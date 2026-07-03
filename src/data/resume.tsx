@@ -6,8 +6,8 @@ import { ReactLight } from "@/components/ui/svgs/reactLight";
 import { Csharp } from "@/components/ui/svgs/csharp";
 
 export const DATA = {
-  name: "Claudia",
-  initials: "CL",
+  name: "Zaineedyou",
+  initials: "ZY",
   url: "https://claudia.web.id",
   location: "Indonesia",
   locationLink: "https://www.google.com/maps/place/Indonesia",
@@ -58,8 +58,8 @@ export const DATA = {
     },
   },
 
-  work: [],
-  education: [],
+  work: [] as const,
+  education: [] as const,
 
   projects: [
     {
@@ -141,5 +141,5 @@ export const DATA = {
     },
   ],
 
-  hackathons: [],
+  hackathons: [] as const,
 } as const;
