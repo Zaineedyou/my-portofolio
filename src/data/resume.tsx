@@ -4,10 +4,45 @@ import { Golang } from "@/components/ui/svgs/golang";
 import { Nodejs } from "@/components/ui/svgs/nodejs";
 import { ReactLight } from "@/components/ui/svgs/reactLight";
 import { Csharp } from "@/components/ui/svgs/csharp";
+import { ReactNode } from "react";
+
+type WorkItem = {
+  company: string;
+  href: string;
+  logoUrl: string;
+  title: string;
+  start: string;
+  end?: string;
+  description: string;
+};
+
+type EducationItem = {
+  school: string;
+  href: string;
+  degree: string;
+  logoUrl: string;
+  start: string;
+  end: string;
+};
+
+type HackathonLink = {
+  title: string;
+  href: string;
+  icon?: ReactNode;
+};
+
+type HackathonItem = {
+  title: string;
+  dates: string;
+  location?: string;
+  description?: string;
+  image?: string;
+  links?: HackathonLink[];
+};
 
 export const DATA = {
-  name: "Zaineedyou",
-  initials: "ZY",
+  name: "Claudia",
+  initials: "CL",
   url: "https://claudia.web.id",
   location: "Indonesia",
   locationLink: "https://www.google.com/maps/place/Indonesia",
@@ -58,8 +93,8 @@ export const DATA = {
     },
   },
 
-  work: [] as const,
-  education: [] as const,
+  work: [] as WorkItem[],
+  education: [] as EducationItem[],
 
   projects: [
     {
@@ -141,5 +176,5 @@ export const DATA = {
     },
   ],
 
-  hackathons: [] as const,
+  hackathons: [] as HackathonItem[],
 } as const;
