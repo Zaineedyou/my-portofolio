@@ -1,13 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-
-const MESSAGES = [
-  "Currently debugging...",
-  "I wonder what I'll build next?",
-  "Compiling...",
-  "Just one more refactor.",
-  "7 projects archived ✦",
-  "Everything works on my machine.",
-];
+import { useEffect, useState } from "react";
 
 const SPARKLE_GLYPHS = ["✦", "·", "˚", "✧"];
 
@@ -19,27 +10,7 @@ type Sparkle = {
 };
 
 export function WorldInteractions() {
-  const [speech, setSpeech] = useState<string | null>(null);
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
-  const speechTimer = useRef<number | null>(null);
-
-  const showRandomMessage = useCallback(() => {
-    setSpeech(MESSAGES[Math.floor(Math.random() * MESSAGES.length)]);
-    if (speechTimer.current) window.clearTimeout(speechTimer.current);
-    speechTimer.current = window.setTimeout(() => setSpeech(null), 4200);
-  }, []);
-
-  useEffect(() => {
-    const firstMessage = window.setTimeout(showRandomMessage, 8500);
-    const nextMessage = window.setInterval(() => {
-      if (Math.random() > 0.45) showRandomMessage();
-    }, 16000);
-
-    return () => {
-      window.clearTimeout(firstMessage);
-      window.clearInterval(nextMessage);
-    };
-  }, [showRandomMessage]);
 
   useEffect(() => {
     const canTrail = window.matchMedia("(pointer: fine)").matches;
@@ -81,37 +52,16 @@ export function WorldInteractions() {
   }, []);
 
   return (
-    <>
-      <div className="cursor-sparkles" aria-hidden="true">
-        {sparkles.map((sparkle) => (
-          <span
-            key={sparkle.id}
-            className="cursor-sparkle"
-            style={{ left: sparkle.x, top: sparkle.y }}
-          >
-            {sparkle.glyph}
-          </span>
-        ))}
-      </div>
-
-      <div className="claudia-companion">
-        {speech && (
-          <div className="companion-bubble" role="status" aria-live="polite">
-            {speech}
-          </div>
-        )}
-        <button
-          type="button"
-          className="companion-mascot"
-          aria-label="Say hello to Claudia"
-          onClick={showRandomMessage}
+    <div className="cursor-sparkles" aria-hidden="true">
+      {sparkles.map((sparkle) => (
+        <span
+          key={sparkle.id}
+          className="cursor-sparkle"
+          style={{ left: sparkle.x, top: sparkle.y }}
         >
-          <span className="mascot-face" aria-hidden="true">
-            ฅ^•ﻌ•^ฅ
-          </span>
-          <span className="mascot-sparkle" aria-hidden="true">✦</span>
-        </button>
-      </div>
-    </>
+          {sparkle.glyph}
+        </span>
+      ))}
+    </div>
   );
 }
