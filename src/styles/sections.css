@@ -152,6 +152,24 @@
   );
 }
 
+.character-idle {
+  transform-origin: center bottom;
+  animation: character-breathe 5.6s ease-in-out infinite;
+}
+
+@keyframes character-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  46% {
+    transform: translateY(-3px) scale(1.006);
+  }
+  58% {
+    transform: translateY(-1px) scale(1.002);
+  }
+}
+
 @media (max-width: 860px) {
   .hero-inner {
     grid-template-columns: 1fr;
@@ -403,6 +421,10 @@
 
 .proj-card:hover {
   box-shadow: var(--shadow-soft);
+}
+
+.proj-card {
+  transition: box-shadow 0.35s ease;
 }
 
 .ribbon {

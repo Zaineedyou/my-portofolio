@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useState, type PointerEvent } from "react";
+import { AnimatePresence, motion, useMotionValue } from "framer-motion";
 import { DATA, type Project } from "../data/resume";
 import { ArrowIcon, GitHubIcon } from "./icons";
 import { PetalDrift, SakuraBranch, FloatingBlossoms } from "./SakuraDecor";
@@ -23,6 +23,16 @@ function useCategories(projects: Project[]) {
 }
 
 function ProjectCard({ project }: { project: Project }) {
+  const mediaX = useMotionValue(0);
+  const mediaY = useMotionValue(0);
+
+  function handlePointerMove(event: PointerEvent<HTMLElement>) {
+    if (event.pointerType !== "mouse") return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    mediaX.set(((event.clientX - rect.left) / rect.width - 0.5) * 4);
+    mediaY.set(((event.clientY - rect.top) / rect.height - 0.5) * 4);
+  }
+
   return (
     <motion.article
       layout
@@ -31,15 +41,20 @@ function ProjectCard({ project }: { project: Project }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -14, scale: 0.96 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -4 }}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={() => {
+        mediaX.set(0);
+        mediaY.set(0);
+      }}
     >
       <img src="/ribbon.png" alt="" aria-hidden="true" className="ribbon" />
 
       <div className="proj-media">
         {project.image ? (
-          <img src={project.image} alt={project.title} loading="lazy" />
+          <motion.img src={project.image} alt={project.title} loading="lazy" style={{ x: mediaX, y: mediaY }} />
         ) : (
-          <div className="proj-media-emblem" aria-hidden="true">
+          <motion.div className="proj-media-emblem" aria-hidden="true" style={{ x: mediaX, y: mediaY }}>
             <span className="proj-media-blob proj-media-blob--a" />
             <span className="proj-media-blob proj-media-blob--b" />
             <span className="proj-media-ring" />
@@ -47,7 +62,7 @@ function ProjectCard({ project }: { project: Project }) {
             <span className="proj-media-spark proj-media-spark--2" />
             <span className="proj-media-spark proj-media-spark--3" />
             <span className="proj-media-mono">{project.title}</span>
-          </div>
+          </motion.div>
         )}
       </div>
 

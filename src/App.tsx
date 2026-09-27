@@ -4,6 +4,7 @@ import { Skills } from "./components/Skills";
 import { Projects } from "./components/Projects";
 import { FieldNotes } from "./components/FieldNotes";
 import { Contact } from "./components/Contact";
+import { WorldInteractions } from "./components/WorldInteractions";
 import "./styles/sections.css";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
       <Projects />
       <FieldNotes />
       <Contact />
+      <WorldInteractions />
     </main>
   );
 }
