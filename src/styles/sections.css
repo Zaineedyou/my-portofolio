@@ -129,50 +129,12 @@
   transform-style: preserve-3d;
 }
 
-.hero-portrait::after {
-  content: "";
-  position: absolute;
-  z-index: 3;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 42%;
-  pointer-events: none;
-  border-radius: 0 0 42% 35% / 0 0 60% 55%;
-  background: linear-gradient(
-    to bottom,
-    rgba(205, 185, 232, 0) 0%,
-    rgba(205, 185, 232, 0.18) 42%,
-    rgba(156, 127, 201, 0.82) 100%
-  );
-}
-
 .hero-portrait-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
-  box-shadow: var(--shadow-soft);
   position: relative;
   z-index: 2;
-  border: 6px solid var(--soft-white);
-  -webkit-mask-image: linear-gradient(to bottom, #000 62%, rgba(0, 0, 0, 0.72) 80%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 62%, rgba(0, 0, 0, 0.72) 80%, transparent 100%);
-}
-
-.hero-portrait-ring {
-  position: absolute;
-  inset: -14px;
-  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
-  border: 1.5px dashed var(--lavender-deep);
-  opacity: 0.55;
-  z-index: 1;
-}
-
-.hero-portrait-ring--b {
-  inset: -28px;
-  border-color: var(--sakura-deep);
-  opacity: 0.4;
 }
 
 @media (max-width: 860px) {

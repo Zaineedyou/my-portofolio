@@ -28,7 +28,7 @@ export const DATA = {
   description: "Software Architect & AI-Assisted Software Engineer",
   summary:
     "I design and ship durable software across AI-assisted automation, backend systems, developer tools, and constrained-device experiences. I work primarily from Android using Termux, turning tight constraints into clearer architecture and practical products.",
-  avatarUrl: "/hero-image.jpeg",
+  avatarUrl: "/hero-character.png",
 
   skills: [
     { name: "Go" },
