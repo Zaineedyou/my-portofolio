@@ -131,16 +131,16 @@
 
 .hero-speech-bubble {
   position: absolute;
-  top: 12%;
-  right: 2%;
+  top: 3%;
+  left: 55%;
   z-index: 4;
-  padding: 0.55rem 0.85rem;
+  padding: 0.7rem 1.05rem;
   border: 1px solid rgba(156, 127, 201, 0.28);
   border-radius: 1rem 1rem 0.25rem 1rem;
   background: var(--soft-white);
   color: var(--ink-muted);
   box-shadow: var(--shadow-charm);
-  font-size: clamp(0.72rem, 1.2vw, 0.9rem);
+  font-size: clamp(0.82rem, 1.35vw, 1rem);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -148,14 +148,14 @@
 .hero-speech-bubble::after {
   content: "";
   position: absolute;
-  right: 0.6rem;
+  left: 1.2rem;
   bottom: -0.42rem;
   width: 0.75rem;
   height: 0.75rem;
   border-right: 1px solid rgba(156, 127, 201, 0.28);
   border-bottom: 1px solid rgba(156, 127, 201, 0.28);
   background: var(--soft-white);
-  transform: skewY(28deg) rotate(18deg);
+  transform: rotate(45deg);
 }
 
 .hero-portrait-img {
@@ -214,8 +214,8 @@
     width: min(430px, 94vw);
   }
   .hero-speech-bubble {
-    top: 10%;
-    right: 1%;
+    top: 2%;
+    left: 52%;
   }
   .hero-summary {
     max-width: 44ch;
