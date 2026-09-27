@@ -124,7 +124,7 @@
 .hero-portrait {
   position: relative;
   justify-self: center;
-  width: min(clamp(430px, 45vw, 600px), 56vw);
+  width: min(clamp(500px, 58vw, 760px), 70vw);
   aspect-ratio: 1;
   transform-style: preserve-3d;
 }
@@ -164,7 +164,7 @@
   }
   .hero-portrait {
     order: 1;
-    width: min(400px, 88vw);
+    width: min(460px, 100vw);
   }
   .hero-summary {
     max-width: 44ch;
