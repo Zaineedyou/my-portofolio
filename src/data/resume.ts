@@ -28,7 +28,7 @@ export const DATA = {
   description: "Software Architect & AI-Assisted Software Engineer",
   summary:
     "I design and ship durable software across AI-assisted automation, backend systems, developer tools, and constrained-device experiences. I work primarily from Android using Termux, turning tight constraints into clearer architecture and practical products.",
-  avatarUrl: "/me.png",
+  avatarUrl: "/hero-image.jpeg",
 
   skills: [
     { name: "Go" },
@@ -137,18 +137,6 @@ export const DATA = {
       video: "",
     },
     {
-      title: "Val-Krypton-Wrapper",
-      href: "https://github.com/Zaineedyou/Val-Krypton-Wrapper",
-      dates: "2026",
-      active: true,
-      description:
-        "A Kotlin Android plugin application for Fold Craft Launcher, Zalith Launcher, and Pojav·Glow·Worm, with tested Realme 9i / Adreno 610 performance profiles and conservative Krypton Wrapper settings.",
-      technologies: ["Kotlin", "Android", "OpenGL", "Performance"],
-      links: [{ type: "Source", href: "https://github.com/Zaineedyou/Val-Krypton-Wrapper" }],
-      image: "",
-      video: "",
-    },
-    {
       title: "ValAuth",
       href: "https://github.com/Zaineedyou/ValAuth",
       dates: "2026",
@@ -157,23 +145,6 @@ export const DATA = {
         "A secure Fabric 26.2 authentication mod with Argon2id hashing, per-password salts, server-side pepper, bcrypt-to-Argon2id upgrades, sessions, TOTP, passkeys, abuse limits, and SQLite or external database storage.",
       technologies: ["Java", "Fabric", "Argon2id", "Security"],
       links: [{ type: "Source", href: "https://github.com/Zaineedyou/ValAuth" }],
-      image: "",
-      video: "",
-    },
-    {
-      title: "ZalithLauncher2Plus-OpenAL-Fix",
-      href: "https://github.com/Zaineedyou/ZalithLauncher2Plus-OpenAL-Fix",
-      dates: "2026",
-      active: true,
-      description:
-        "An unofficial Android launcher fork for Minecraft: Java Edition, built on Zalith Launcher 2 and PojavLauncher with a modern Jetpack Compose/Material 3 UI, offline accounts, import/export tools, and mobile-focused fixes.",
-      technologies: ["Kotlin", "Android", "Jetpack Compose", "Minecraft"],
-      links: [
-        {
-          type: "Source",
-          href: "https://github.com/Zaineedyou/ZalithLauncher2Plus-OpenAL-Fix",
-        },
-      ],
       image: "",
       video: "",
     },
