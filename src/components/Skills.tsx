@@ -16,10 +16,30 @@ export function Skills() {
               <motion.li
                 key={skill.name}
                 className={`charm ${i % 2 === 0 ? "charm--sakura" : "charm--lavender"}`}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 14, rotate: i % 2 === 0 ? -6 : 6 }}
+                whileInView={{
+                  opacity: 1,
+                  y: [0, -6, 0],
+                  rotate: i % 2 === 0 ? -2.5 : 2.5,
+                }}
                 viewport={{ once: true, amount: 0.6 }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
+                transition={{
+                  opacity: { duration: 0.5, delay: i * 0.06 },
+                  rotate: { duration: 0.5, delay: i * 0.06 },
+                  y: {
+                    duration: 2.6 + (i % 3) * 0.4,
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    ease: "easeInOut",
+                    delay: i * 0.15,
+                  },
+                }}
+                whileHover={{
+                  y: -10,
+                  rotate: 0,
+                  scale: 1.08,
+                  transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+                }}
               >
                 <span className="charm-mono">{monogram(skill.name)}</span>
                 <span className="charm-label">{skill.name}</span>
