@@ -124,7 +124,7 @@
 .hero-portrait {
   position: relative;
   justify-self: center;
-  width: min(340px, 78vw);
+  width: min(clamp(390px, 42vw, 540px), 48vw);
   aspect-ratio: 1;
   transform-style: preserve-3d;
 }
@@ -135,6 +135,21 @@
   object-fit: cover;
   position: relative;
   z-index: 2;
+  /* Let the character dissolve into the hero background instead of ending abruptly. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 76%,
+    rgba(0, 0, 0, 0.78) 84%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 76%,
+    rgba(0, 0, 0, 0.78) 84%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 @media (max-width: 860px) {
@@ -149,7 +164,7 @@
   }
   .hero-portrait {
     order: 1;
-    width: min(260px, 62vw);
+    width: min(360px, 82vw);
   }
   .hero-summary {
     max-width: 44ch;
