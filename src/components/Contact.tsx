@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { DATA } from "../data/resume";
-import { CornerBlossom } from "./SakuraDecor";
+import { CornerBlossom, PetalDrift, FloatingBlossoms, SakuraBranch } from "./SakuraDecor";
 import { GitHubIcon, DiscordIcon, InstagramIcon, EmailIcon } from "./icons";
 
 const socialIcons: Record<string, (props: { className?: string }) => JSX.Element> = {
@@ -16,6 +16,9 @@ export function Contact() {
 
   return (
     <footer className="section contact-section" aria-label="Contact">
+      <PetalDrift />
+      <FloatingBlossoms />
+      <SakuraBranch className="hero-branch hero-branch--left contact-branch" />
       <div className="container">
         <motion.div
           className="card contact-card"

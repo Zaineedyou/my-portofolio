@@ -1,4 +1,4 @@
-# Zaineedyou — Portfolio
+# Claudia — Portfolio
 
 Redesain visual dari portofolio ini, dibangun dengan **Vite + React +
 TypeScript** (bukan Next.js, bukan single HTML). Semua teks, nama proyek,

@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { DATA } from "../data/resume";
-import { CornerBlossom, PetalDrift } from "./SakuraDecor";
+import { CornerBlossom, PetalDrift, FloatingBlossoms } from "./SakuraDecor";
 
 export function About() {
   return (
     <section className="section about-section" aria-label="About">
       <PetalDrift />
+      <FloatingBlossoms />
       <div className="container">
         <motion.div
           className="card about-card"

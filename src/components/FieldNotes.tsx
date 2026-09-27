@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { FIELD_NOTES } from "../data/fieldNotes";
-import { CornerBlossom } from "./SakuraDecor";
+import { CornerBlossom, FloatingBlossoms } from "./SakuraDecor";
 
 export function FieldNotes() {
   return (
     <section className="section fieldnotes-section" aria-label="Field Notes">
+      <FloatingBlossoms />
       <div className="container">
         <span className="eyebrow fieldnotes-eyebrow">Field Notes</span>
 

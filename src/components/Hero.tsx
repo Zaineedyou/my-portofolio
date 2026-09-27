@@ -2,7 +2,7 @@ import { useRef } from "react";
 import type { PointerEvent } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { DATA } from "../data/resume";
-import { SakuraBranch, PetalDrift } from "./SakuraDecor";
+import { SakuraBranch, PetalDrift, FloatingBlossoms } from "./SakuraDecor";
 import { GitHubIcon, DiscordIcon, InstagramIcon, EmailIcon } from "./icons";
 
 const socialIcons: Record<string, (props: { className?: string }) => JSX.Element> = {
@@ -39,6 +39,7 @@ export function Hero() {
   return (
     <section className="hero" aria-label="Introduction">
       <PetalDrift />
+      <FloatingBlossoms />
       <SakuraBranch className="hero-branch hero-branch--right" />
       <SakuraBranch className="hero-branch hero-branch--left" />
 

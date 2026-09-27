@@ -100,3 +100,57 @@ export function CornerBlossom({ className = "" }: { className?: string }) {
     </svg>
   );
 }
+
+function MiniBlossom() {
+  return (
+    <svg viewBox="0 0 60 60" fill="none" width="100%" height="100%">
+      <g transform="translate(30 30)">
+        {[0, 72, 144, 216, 288].map((deg) => (
+          <ellipse
+            key={deg}
+            cx={0}
+            cy={-17}
+            rx={10}
+            ry={17}
+            fill="currentColor"
+            opacity="0.85"
+            transform={`rotate(${deg})`}
+          />
+        ))}
+        <circle r={6} fill="currentColor" opacity="0.55" />
+      </g>
+    </svg>
+  );
+}
+
+/** A scattering of small blossoms that gently bob and turn in place —
+ * an ambient accent distinct from the falling PetalDrift. */
+export function FloatingBlossoms({ className = "" }: { className?: string }) {
+  const blossoms = [
+    { top: "10%", left: "5%", size: 24, tone: "sakura", delay: "0s", dur: "7s" },
+    { top: "72%", left: "9%", size: 18, tone: "lavender", delay: "1.4s", dur: "9s" },
+    { top: "16%", left: "92%", size: 20, tone: "lavender", delay: "0.7s", dur: "8s" },
+    { top: "82%", left: "90%", size: 26, tone: "sakura", delay: "2.1s", dur: "10s" },
+    { top: "46%", left: "50%", size: 15, tone: "sakura", delay: "2.8s", dur: "6.5s" },
+  ];
+  return (
+    <div className={`floating-blossoms ${className}`} aria-hidden="true">
+      {blossoms.map((b, i) => (
+        <span
+          key={i}
+          className={`floating-blossom floating-blossom--${b.tone}`}
+          style={{
+            top: b.top,
+            left: b.left,
+            width: b.size,
+            height: b.size,
+            animationDelay: b.delay,
+            animationDuration: b.dur,
+          }}
+        >
+          <MiniBlossom />
+        </span>
+      ))}
+    </div>
+  );
+}

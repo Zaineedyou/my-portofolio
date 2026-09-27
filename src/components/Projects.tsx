@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DATA, type Project } from "../data/resume";
 import { ArrowIcon, GitHubIcon } from "./icons";
-import { PetalDrift, SakuraBranch } from "./SakuraDecor";
+import { PetalDrift, SakuraBranch, FloatingBlossoms } from "./SakuraDecor";
 
 const ALL = "All";
 
@@ -88,6 +88,7 @@ export function Projects() {
   return (
     <section className="section projects-section" aria-label="Projects" id="projects">
       <PetalDrift />
+      <FloatingBlossoms />
       <SakuraBranch className="hero-branch hero-branch--right projects-branch" />
       <div className="container">
         <h2 className="projects-heading">Projects</h2>

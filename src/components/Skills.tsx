@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { DATA } from "../data/resume";
 import { monogram } from "../lib/text";
+import { FloatingBlossoms } from "./SakuraDecor";
 
 export function Skills() {
   return (
     <section className="section skills-section" aria-label="Skills">
+      <FloatingBlossoms />
       <div className="container">
         <span className="eyebrow skills-eyebrow">Skills</span>
         <div className="charm-bracelet">

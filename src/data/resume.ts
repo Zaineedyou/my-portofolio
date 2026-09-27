@@ -20,8 +20,8 @@ export type Project = {
 };
 
 export const DATA = {
-  name: "Zaineedyou",
-  initials: "Zaineedyou",
+  name: "Claudia",
+  initials: "Claudia",
   url: "https://claudia.web.id",
   location: "Indonesia",
   locationLink: "https://www.google.com/maps/place/Indonesia",

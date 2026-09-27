@@ -154,6 +154,41 @@ p {
   }
 }
 
+/* ---------------- Floating blossoms ambience ---------------- */
+.floating-blossoms {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floating-blossom {
+  position: absolute;
+  opacity: 0.4;
+  animation-name: blossom-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.floating-blossom--sakura {
+  color: var(--sakura-deep);
+}
+
+.floating-blossom--lavender {
+  color: var(--lavender-deep);
+}
+
+@keyframes blossom-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(18deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
