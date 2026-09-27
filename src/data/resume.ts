@@ -37,7 +37,7 @@ export const DATA = {
     { name: "Kotlin" },
     { name: "C++" },
     { name: "Node.js" },
-    { name: "React" },
+    { name: "Assembly" },
   ],
 
   contact: {

@@ -49,7 +49,16 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="hero-location pill">{DATA.location}</span>
+          <motion.a
+            className="hero-location pill"
+            href={DATA.locationLink}
+            target="_blank"
+            rel="noreferrer"
+            whileHover={{ y: -2, scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+          >
+            {DATA.location}
+          </motion.a>
 
           <h1 className="hero-name">{DATA.name}</h1>
 

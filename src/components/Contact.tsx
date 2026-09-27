@@ -38,16 +38,19 @@ export function Contact() {
               const href = key === "email" ? `mailto:${s.url}` : s.url;
               return (
                 <li key={key}>
-                  <a
+                  <motion.a
                     className="charm-btn"
                     href={href}
                     target={key === "email" ? undefined : "_blank"}
                     rel="noreferrer"
                     aria-label={s.name}
                     title={s.name}
+                    whileHover={{ y: -4, scale: 1.08, rotate: 6 }}
+                    whileTap={{ scale: 0.94 }}
+                    transition={{ type: "spring", stiffness: 320, damping: 18 }}
                   >
                     {Icon ? <Icon className="charm-icon" /> : null}
-                  </a>
+                  </motion.a>
                 </li>
               );
             })}

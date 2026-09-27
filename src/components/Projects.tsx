@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DATA, type Project } from "../data/resume";
 import { ArrowIcon, GitHubIcon } from "./icons";
+import { PetalDrift, SakuraBranch } from "./SakuraDecor";
 
 const ALL = "All";
 
@@ -38,9 +39,15 @@ function ProjectCard({ project }: { project: Project }) {
         {project.image ? (
           <img src={project.image} alt={project.title} loading="lazy" />
         ) : (
-          <span className="proj-media-mono" aria-hidden="true">
-            {project.title.charAt(0)}
-          </span>
+          <div className="proj-media-emblem" aria-hidden="true">
+            <span className="proj-media-blob proj-media-blob--a" />
+            <span className="proj-media-blob proj-media-blob--b" />
+            <span className="proj-media-ring" />
+            <span className="proj-media-spark proj-media-spark--1" />
+            <span className="proj-media-spark proj-media-spark--2" />
+            <span className="proj-media-spark proj-media-spark--3" />
+            <span className="proj-media-mono">{project.title}</span>
+          </div>
         )}
       </div>
 
@@ -80,6 +87,8 @@ export function Projects() {
 
   return (
     <section className="section projects-section" aria-label="Projects" id="projects">
+      <PetalDrift />
+      <SakuraBranch className="hero-branch hero-branch--right projects-branch" />
       <div className="container">
         <h2 className="projects-heading">Projects</h2>
 
