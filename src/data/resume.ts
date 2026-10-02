@@ -20,9 +20,9 @@ export type Project = {
 };
 
 export const DATA = {
-  name: "Claudia",
-  initials: "Claudia",
-  url: "https://claudia.web.id",
+  name: "Zaineedyou",
+  initials: "Zaineedyou",
+  url: "https://zaineedyou.my.id",
   location: "Indonesia",
   locationLink: "https://www.google.com/maps/place/Indonesia",
   description: "Software Architect & AI-Assisted Software Engineer",
@@ -55,10 +55,6 @@ export const DATA = {
       Instagram: {
         name: "Instagram",
         url: "https://instagram.com/krebipeettiiii",
-      },
-      email: {
-        name: "Send Email",
-        url: "claudia@claudia.web.id",
       },
     },
   },
