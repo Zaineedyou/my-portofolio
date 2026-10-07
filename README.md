@@ -27,11 +27,11 @@ npm run preview
 
 ## Design direction
 
-- **Language:** editorial, kinetic, high-contrast, personal archive
-- **Palette:** warm paper, black ink, and one burnt-orange accent
-- **Type:** Space Grotesk for display and body, DM Mono for metadata and indexing
-- **Structure:** one strong opening statement, an indexed project list, field notes, and a direct archive footer
-- **Motion:** subtle section reveals and image hover treatment, with a reduced-motion fallback
+- **Language:** playful product landing-page language adapted from Claudia Ó Loki: chunky uppercase display type, sticker-like headings, large rounded cards, pill buttons, swooshes, and dotted paper texture
+- **Palette:** Claudia's light grey paper, black ink, white cards, and tan `#c48a62` accent
+- **Type:** bold system fallback stack using Impact/Arial Narrow style display treatment and system body text
+- **Structure:** sticky pill navigation, poster-like hero, archive metrics, rounded feature cards, project index, field notes, and closing CTA card
+- **Motion:** subtle card reveals and color-preserving image hover treatment, with a reduced-motion fallback
 - **Content:** project descriptions and field notes remain grounded in the source data. The human-rights criticism in `src/data/fieldNotes.ts` is intentionally preserved as authored text.
 
 ## Content source
