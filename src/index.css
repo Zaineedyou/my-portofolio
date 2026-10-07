@@ -27,7 +27,7 @@
   --line: 3px solid var(--ink);
   --radius-card: 28px;
   --radius-small: 18px;
-  --shadow-card: 0 8px 26px rgba(0, 0, 0, .28);
+  --shadow-card: 8px 8px 0 var(--ink);
   color: var(--ink);
   background: var(--paper);
   font-family: var(--body);
@@ -178,8 +178,6 @@ button { color: inherit; }
 .button:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
 .button-primary { background: var(--tan); color: var(--ink); }
 .button-primary:hover { background: var(--ink); color: var(--surface); }
-.button-plain { background: var(--surface); color: var(--ink); }
-.button-plain:hover { background: var(--tan); }
 .hero-art { position: relative; z-index: 1; justify-self: center; width: min(100%, 410px); }
 .hero-image-wrap {
   position: relative;
@@ -323,13 +321,15 @@ button { color: inherit; }
 }
 .working-principle p { grid-column: 2; grid-row: 1; max-width: none; font-family: var(--marker); font-size: clamp(30px, 4.1vw, 52px); line-height: .96; text-transform: uppercase; }
 .working-principle cite { grid-column: 1; grid-row: 1; font-family: var(--tag); font-size: 18px; font-style: normal; text-transform: uppercase; }
-.field-notes-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.field-notes-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.15fr); gap: 18px; align-items: start; }
 .field-note { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 14px; align-items: start; min-height: 260px; padding: clamp(22px, 3vw, 30px); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow-card); }
+.field-note:nth-child(1) { grid-column: 1; grid-row: 1; }
+.field-note:nth-child(2) { grid-column: 1; grid-row: 2; }
 .note-index { color: #75482d; font-family: var(--marker); font-size: 26px; line-height: 1; }
 .field-note-copy { min-width: 0; }
 .field-note h3 { font-family: var(--marker); font-size: clamp(26px, 2.5vw, 36px); font-weight: 400; line-height: .98; text-transform: uppercase; overflow-wrap: anywhere; }
 .field-note p { margin-top: 12px; color: var(--muted); font-family: var(--tag); font-size: clamp(16px, 1.5vw, 18px); line-height: 1.55; }
-.political-note { grid-column: 1 / -1; background: var(--ink); color: var(--surface); }
+.political-note { grid-column: 2; grid-row: 1 / span 2; align-self: start; background: var(--ink); color: var(--surface); }
 .political-note .field-note-copy { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: 16px 32px; align-items: start; }
 .political-note p { margin-top: 0; }
 .political-note .note-index, .political-note h3 { color: var(--tan); }
@@ -370,7 +370,8 @@ button { color: inherit; }
   .about-section .section-title { max-width: none; }
   .skills-block { grid-template-columns: minmax(150px, .55fr) 1.45fr; }
   .project-entry--image { grid-template-columns: 46px minmax(0, 1fr) minmax(140px, 190px); }
-  .field-notes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field-notes-grid { grid-template-columns: minmax(0, .95fr) minmax(0, 1.15fr); }
+  .political-note .field-note-copy { grid-template-columns: 1fr; gap: 10px; }
   .site-footer { grid-template-columns: 1fr 1fr; }
   .copyright { grid-column: 1 / -1; }
 }
@@ -429,7 +430,7 @@ button { color: inherit; }
   .field-notes-grid { grid-template-columns: 1fr; gap: 14px; }
   .field-note { min-height: 0; padding: 22px 20px; }
   .field-note h3 { font-size: clamp(26px, 8vw, 34px); }
-  .political-note { grid-column: 1; }
+  .field-note:nth-child(1), .field-note:nth-child(2), .political-note { grid-column: 1; grid-row: auto; }
   .political-note .field-note-copy { grid-template-columns: 1fr; gap: 10px; }
   .closing-section { grid-template-columns: 1fr; align-items: start; margin-top: 82px; padding: 28px 22px; }
   .closing-section .eyebrow { grid-column: 1; }

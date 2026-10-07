@@ -24,7 +24,7 @@ npm run preview
 
 ## Design direction
 
-Warm paper, black ink, and Claudia tan form the palette. The Working Principle quote sits in a wide horizontal card. Three field notes follow in their original order, with the political note shown as number 03. Claudia Tag is used for longer descriptions and notes; Claudia Marker remains the display face. Mobile reflows the cards into one column while keeping visible keyboard focus and reduced-motion support.
+Warm paper, black ink, and Claudia tan form the palette. The Working Principle quote sits in a wide horizontal card. Notes 01 and 02 stack in the left column, and the political note is 03 in the right column. Claudia Tag is used for longer descriptions and notes; Claudia Marker remains the display face. Mobile reflows the cards into one column while keeping visible keyboard focus and reduced-motion support.
 
 ## Content source
 

@@ -75,7 +75,6 @@ function App() {
             <p className="hero-intro">I work on backend systems and developer tools using Termux.</p>
             <div className="hero-actions">
               <a className="button button-primary" href="#work">See the work</a>
-              <a className="button button-plain" href="#notes">Read the notes</a>
             </div>
           </div>
           <figure className="hero-art">
