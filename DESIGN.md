@@ -26,4 +26,4 @@ Project, technology, contact, summary, and field-note data remain in `src/data/r
 
 ## For Mom
 
-The `#for-mom` route adds a quiet page using the same paper, Claudia fonts, tan, rounded corners, and visible offset shadows. Its turntable is original CSS 3D with a smooth record rotation while audio plays; the tonearm pivots down into the record grooves on playback. The custom controls support play, pause, and seeking. The provided poem is rendered as supplied, and the player uses the full Opus track supplied at `public/audio/Number One For Me-Maher Zain.opus`.
+The `#for-mom` route adds a quiet page using the same paper, Claudia fonts, tan, rounded corners, and visible offset shadows. Its turntable is original CSS 3D with a smooth record rotation while audio plays; the tonearm pivots down into the record grooves on playback. The custom controls support play, pause, and seeking. The provided poem is rendered as supplied in one rounded card. The full user-supplied Opus track is served from `public/audio/Number One For Me-Maher Zain.ogg` so Vercel returns an audio MIME type.

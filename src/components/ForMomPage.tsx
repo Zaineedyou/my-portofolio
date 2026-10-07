@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent } from "react";
 
-const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.opus";
+const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.ogg";
 
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -111,7 +111,7 @@ export default function ForMomPage() {
                 <span className="mom-time" aria-hidden="true">{formatTime(duration)}</span>
               </div>
               <p className="mom-audio-status" role="status" aria-live="polite">
-                {playerError || "Using the full audio file you uploaded, in Opus format."}
+                {playerError || "Full track uploaded for this page. The player uses Ogg Opus audio."}
               </p>
               <audio
                 ref={audioRef}
@@ -159,16 +159,6 @@ export default function ForMomPage() {
           </blockquote>
         </section>
 
-        <section className="mom-promise" aria-labelledby="mom-promise-title">
-          <p className="eyebrow" id="mom-promise-title">What I carry forward</p>
-          <p className="mom-promise-copy">To keep loving with the grace you gave, and carry that warmth into everything I build.</p>
-          <span className="mom-promise-mark" aria-hidden="true">For Mom, with love.</span>
-        </section>
-
-        <footer className="mom-footer">
-          <a className="mom-back-link" href="#top">Back to the portfolio</a>
-          <span>{new Date().getFullYear()} / {" "}A page for Mom</span>
-        </footer>
       </div>
     </main>
   );
