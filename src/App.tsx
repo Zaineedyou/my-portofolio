@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DATA, type Project } from "./data/resume";
 import { FIELD_NOTES } from "./data/fieldNotes";
+import ForMomPage from "./components/ForMomPage";
 import "./index.css";
 
 const ALL = "All";
@@ -41,6 +42,7 @@ function ProjectEntry({ project, ordinal }: { project: Project; ordinal: number 
 }
 
 function App() {
+  const [showForMom, setShowForMom] = useState(() => window.location.hash === "#for-mom");
   const [isLoading, setIsLoading] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -118,6 +120,19 @@ function App() {
     if (isLoading) content.setAttribute("inert", "");
     else content.removeAttribute("inert");
   }, [isLoading]);
+  useEffect(() => {
+    const syncRoute = () => {
+      setShowForMom(window.location.hash === "#for-mom");
+      window.scrollTo({ top: 0, behavior: "auto" });
+    };
+    window.addEventListener("hashchange", syncRoute);
+    return () => window.removeEventListener("hashchange", syncRoute);
+  }, []);
+  useEffect(() => {
+    document.title = showForMom
+      ? "For Mom | Zaineedyou"
+      : "Zaineedyou | Software, Archive, and Field Notes";
+  }, [showForMom]);
 
   const [activeCategory, setActiveCategory] = useState(ALL);
   const categories = useMemo(
@@ -145,6 +160,8 @@ function App() {
         </div>
       )}
       <div className="portfolio-content" ref={portfolioContentRef}>
+      {showForMom ? <ForMomPage /> : (
+      <>
       <a className="skip-link" href="#content">Skip to content</a>
 
       <header className="top-nav">
@@ -153,6 +170,12 @@ function App() {
           <a href="#about">About</a>
           <a href="#work">Work</a>
           <a href="#notes">Notes</a>
+          <a className="nav-for-mom" href="#for-mom">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" />
+            </svg>
+            <span>For Mom</span>
+          </a>
           <a className="nav-github" href={DATA.contact.social.GitHub.url} target="_blank" rel="noreferrer">GitHub</a>
         </nav>
       </header>
@@ -278,6 +301,8 @@ function App() {
         </nav>
         <p className="copyright">© {new Date().getFullYear()} {DATA.name}</p>
       </footer>
+      </>
+      )}
       </div>
     </div>
   );

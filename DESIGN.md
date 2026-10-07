@@ -23,3 +23,7 @@ CaineGO and ClaudiaRPC-Rust project entries and links remain, but their two proj
 ## Content constraints
 
 Project, technology, contact, summary, and field-note data remain in `src/data/resume.ts` and `src/data/fieldNotes.ts`. The visual layer must not invent project claims, statistics, testimonials, links, or replacement political copy.
+
+## For Mom
+
+The `#for-mom` route adds a quiet page using the same paper, Claudia fonts, tan, rounded corners, and visible offset shadows. Its turntable is original CSS 3D with a smooth record rotation while audio plays; the custom controls support play, pause, and seeking. The provided poem is rendered as supplied. `public/audio/Number One For Me-Maher Zain.flac` is a five-second silent FLAC placeholder, not the commercial recording; replace it only with an authorized audio file.
