@@ -61,6 +61,21 @@ export const DATA = {
 
   projects: [
     {
+      title: "Claudia Ó Loki",
+      href: "https://panelbot.zaineedyou.my.id",
+      dates: "2026",
+      active: true,
+      description:
+        "A Go-based WhatsApp AI bot with per-chat PostgreSQL memory, Groq model switching, QR and phone pairing, and a secure admin dashboard for channel history, access roles, rate limits, and broadcasts.",
+      technologies: ["Go", "WhatsApp", "Groq", "PostgreSQL"],
+      links: [
+        { type: "Source", href: "https://github.com/Zaineedyou/claudia-oz-loki" },
+        { type: "Live Site", href: "https://panelbot.zaineedyou.my.id" },
+      ],
+      image: "",
+      video: "",
+    },
+    {
       title: "CaineGO",
       href: "https://github.com/Zaineedyou/CaineGO",
       dates: "2026",

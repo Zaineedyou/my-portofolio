@@ -81,7 +81,7 @@ function ProjectCard({ project }: { project: Project }) {
         <span className="proj-dates">{project.dates}</span>
         {project.links.map((link) => (
           <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="proj-link">
-            <GitHubIcon className="proj-link-icon" />
+            {link.type === "Source" && <GitHubIcon className="proj-link-icon" />}
             {link.type}
             <ArrowIcon className="proj-link-arrow" />
           </a>
