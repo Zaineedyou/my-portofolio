@@ -16,7 +16,7 @@ Claudia Marker handles headlines; Claudia Tag is used for labels and longer auth
 
 Cards use a 28px radius and the portfolio's hard offset shadow. The Working Principle quote is a full-width landscape card with its label set beside the quote. Below it, notes `01` and `02` stack in the left column while the political criticism is the dark note `03` in the right column, without an extra eyebrow; mobile stacks them in source order.
 
-The initial loading screen uses the Claudia typefaces, paper-and-ink palette, and an indeterminate progress line. It closes when the hero image and fonts are ready, with a short timeout fallback and a reduced-motion state.
+The initial loading screen follows Claudia Ó Loki's boot card, swoosh, outlined wordmark, rounded percentage bar, and fade-out. The `Zaineedyou` wordmark replaces the product name. The bar eases over 2.4 seconds and the fade completes the three-second sequence, with an asset timeout fallback and reduced-motion support.
 
 CaineGO and ClaudiaRPC-Rust project entries and links remain, but their two project images are not shown. Category filters, keyboard feedback, restrained hero motion, reduced-motion support, and mobile reflow remain.
 

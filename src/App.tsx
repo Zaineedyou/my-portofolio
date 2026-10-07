@@ -42,42 +42,78 @@ function ProjectEntry({ project, ordinal }: { project: Project; ordinal: number 
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isClosing, setIsClosing] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const portfolioContentRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let disposed = false;
-    let completed = false;
+    let closed = false;
+    let done = 0;
+    let shown = 0;
+    let imageReady = false;
+    let fontsReady = false;
+    let intervalTimer = 0;
     let fallbackTimer = 0;
-    let revealTimer = 0;
-    const startedAt = performance.now();
-    const finish = () => {
-      if (disposed || completed) return;
-      completed = true;
-      window.clearTimeout(fallbackTimer);
-      window.clearTimeout(revealTimer);
-      setIsLoading(false);
+    let closeTimer = 0;
+    let removeTimer = 0;
+    const startedAt = Date.now();
+    const progressDuration = 2400;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const stepImage = () => {
+      if (!imageReady) {
+        imageReady = true;
+        done += 1;
+      }
+    };
+    const stepFonts = () => {
+      if (!fontsReady) {
+        fontsReady = true;
+        done += 1;
+      }
+    };
+    const close = () => {
+      if (disposed || closed) return;
+      closed = true;
+      window.clearInterval(intervalTimer);
+      setLoadingProgress(100);
+      closeTimer = window.setTimeout(() => {
+        if (disposed) return;
+        setIsClosing(true);
+        removeTimer = window.setTimeout(() => {
+          if (!disposed) setIsLoading(false);
+        }, 450);
+      }, 150);
     };
 
-    fallbackTimer = window.setTimeout(finish, 1600);
-    const heroImageReady = new Promise<void>((resolve) => {
-      const image = new window.Image();
-      const settle = () => resolve();
-      image.addEventListener("load", settle, { once: true });
-      image.addEventListener("error", settle, { once: true });
-      image.src = DATA.avatarUrl;
-      if (image.complete) settle();
-    });
-    const fontsReady = document.fonts?.ready ?? Promise.resolve();
+    const image = new window.Image();
+    image.onload = stepImage;
+    image.onerror = stepImage;
+    image.src = DATA.avatarUrl;
+    if (image.complete) stepImage();
+    void Promise.resolve(document.fonts?.ready).then(stepFonts, stepFonts);
 
-    void Promise.allSettled([fontsReady, heroImageReady]).then(() => {
-      if (disposed || completed) return;
-      const remaining = Math.max(0, 420 - (performance.now() - startedAt));
-      revealTimer = window.setTimeout(finish, remaining);
-    });
+    intervalTimer = window.setInterval(() => {
+      const elapsed = Date.now() - startedAt;
+      if (reducedMotion) {
+        if (done >= 2 && elapsed >= progressDuration) close();
+        return;
+      }
+      const maxProgress = done >= 2 ? 92 : 70;
+      const target = Math.min(maxProgress, elapsed / progressDuration * maxProgress);
+      shown += (target - shown) * 0.3;
+      setLoadingProgress(shown);
+      if (done >= 2 && elapsed >= progressDuration) close();
+    }, 50);
+    fallbackTimer = window.setTimeout(close, progressDuration);
 
     return () => {
       disposed = true;
+      window.clearInterval(intervalTimer);
       window.clearTimeout(fallbackTimer);
-      window.clearTimeout(revealTimer);
+      window.clearTimeout(closeTimer);
+      window.clearTimeout(removeTimer);
+      image.onload = null;
+      image.onerror = null;
     };
   }, []);
   useEffect(() => {
@@ -101,12 +137,14 @@ function App() {
   return (
     <div className={`portfolio-shell${isLoading ? " portfolio-shell--loading" : ""}`}>
       {isLoading && (
-        <div className="loading-screen" role="status" aria-live="polite">
-          <div className="loading-content">
-            <p className="loading-eyebrow">Personal archive / {DATA.location}</p>
-            <p className="loading-brand">{DATA.name}</p>
-            <div className="loading-track" aria-hidden="true"><span /></div>
-            <p className="loading-status">Opening the archive</p>
+        <div id="boot" className={isClosing ? "out" : ""} role="status" aria-live="polite" aria-label={`Memuat ${DATA.name}`}>
+          <div className="boot-card">
+            <svg className="boot-swoosh" viewBox="0 0 500 300" fill="none" aria-hidden="true" preserveAspectRatio="none">
+              <path d="M-30 240C150 150 330 230 540 110" stroke="currentColor" strokeWidth="40" strokeLinecap="round" />
+            </svg>
+            <div className="boot-mark">{DATA.name}</div>
+            <div className="boot-bar" aria-hidden="true"><i style={{ width: `${loadingProgress}%` }} /></div>
+            <div className="boot-pct" aria-hidden="true">Memuat {Math.round(loadingProgress)}%</div>
           </div>
         </div>
       )}
