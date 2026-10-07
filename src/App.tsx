@@ -57,8 +57,8 @@ function App() {
     let closeTimer = 0;
     let removeTimer = 0;
     const startedAt = Date.now();
-    const progressDuration = 2400;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const progressDuration = 4400;
+    const fillDuration = progressDuration - 200;
     const stepImage = () => {
       if (!imageReady) {
         imageReady = true;
@@ -94,13 +94,9 @@ function App() {
 
     intervalTimer = window.setInterval(() => {
       const elapsed = Date.now() - startedAt;
-      if (reducedMotion) {
-        if (done >= 2 && elapsed >= progressDuration) close();
-        return;
-      }
-      const maxProgress = done >= 2 ? 92 : 70;
-      const target = Math.min(maxProgress, elapsed / progressDuration * maxProgress);
-      shown += (target - shown) * 0.3;
+      const maxProgress = 97 + done;
+      const target = Math.min(maxProgress, elapsed / fillDuration * maxProgress);
+      shown += (target - shown) * 0.55;
       setLoadingProgress(shown);
       if (done >= 2 && elapsed >= progressDuration) close();
     }, 50);
