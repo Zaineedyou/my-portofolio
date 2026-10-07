@@ -79,13 +79,15 @@ function ProjectCard({ project }: { project: Project }) {
 
       <div className="proj-footer">
         <span className="proj-dates">{project.dates}</span>
-        {project.links.map((link) => (
-          <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="proj-link">
-            {link.type === "Source" && <GitHubIcon className="proj-link-icon" />}
-            {link.type}
-            <ArrowIcon className="proj-link-arrow" />
-          </a>
-        ))}
+        <div className="proj-links">
+          {project.links.map((link) => (
+            <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="proj-link">
+              {link.type === "Source" && <GitHubIcon className="proj-link-icon" />}
+              {link.type}
+              <ArrowIcon className="proj-link-arrow" />
+            </a>
+          ))}
+        </div>
       </div>
     </motion.article>
   );

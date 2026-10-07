@@ -652,6 +652,13 @@
   color: var(--ink-muted);
 }
 
+.proj-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
 .proj-link {
   display: inline-flex;
   align-items: center;
