@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent } from "react";
 
-const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.flac";
+const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.opus";
 
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -25,7 +25,7 @@ export default function ForMomPage() {
         await audio.play();
         setPlayerError("");
       } catch {
-        setPlayerError("Audio could not start. Check that the placeholder file is present.");
+        setPlayerError("Audio could not start. Check that the uploaded audio file is present.");
       }
       return;
     }
@@ -111,22 +111,23 @@ export default function ForMomPage() {
                 <span className="mom-time" aria-hidden="true">{formatTime(duration)}</span>
               </div>
               <p className="mom-audio-status" role="status" aria-live="polite">
-                {playerError || "Silent placeholder only. Replace the FLAC with an authorized recording to hear the song."}
+                {playerError || "Using the full audio file you uploaded, in Opus format."}
               </p>
               <audio
                 ref={audioRef}
                 className="mom-audio"
-                src={AUDIO_SRC}
                 preload="metadata"
-                aria-label="Number One For Me by Maher Zain, placeholder audio"
+                aria-label="Number One For Me by Maher Zain, full uploaded audio"
                 onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
                 onLoadedMetadata={(event) => syncDuration(event.currentTarget)}
                 onDurationChange={(event) => syncDuration(event.currentTarget)}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 onEnded={() => setIsPlaying(false)}
-                onError={() => setPlayerError("The placeholder FLAC could not be loaded. Check the file path in public/audio.")}
-              />
+                onError={() => setPlayerError("The uploaded audio could not be loaded. Check the file path in public/audio.")}
+              >
+                <source src={AUDIO_SRC} type="audio/ogg; codecs=opus" />
+              </audio>
             </div>
           </section>
         </section>

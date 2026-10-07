@@ -28,7 +28,7 @@ Warm paper, black ink, and Claudia tan form the palette. The Working Principle q
 
 ## For Mom
 
-Open `/#for-mom` from the portfolio or use the heart-marked **For Mom** button. The page pairs the supplied poem with an original CSS 3D turntable and accessible play, pause, and seek controls. `public/audio/Number One For Me-Maher Zain.flac` contains five seconds of silence as a replaceable placeholder; it is not the song recording. Replace it with an audio file you are authorized to use.
+Open `/#for-mom` from the portfolio or use the heart-marked **For Mom** button. The page pairs the supplied poem with an original CSS 3D turntable and accessible play, pause, and seek controls. The player uses the full Opus track supplied for the page at `public/audio/Number One For Me-Maher Zain.opus`.
 
 ## Content source
 
