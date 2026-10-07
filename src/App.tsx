@@ -1,161 +1,192 @@
 import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { DATA, type Project } from "./data/resume";
 import { FIELD_NOTES } from "./data/fieldNotes";
 import "./index.css";
 
 const ALL = "All";
 
-function Arrow() {
-  return <span aria-hidden="true" className="arrow">↗</span>;
-}
+function ProjectEntry({ project, ordinal }: { project: Project; ordinal: number }) {
+  const hasImage = Boolean(project.image);
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
-    <motion.article
-      className="archive-card"
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.45, delay: Math.min(index * 0.04, 0.18) }}
-    >
-      <div className="archive-card-top">
-        <span className="number-sticker">{String(index + 1).padStart(2, "0")}</span>
-        <span className="archive-year">{project.dates}</span>
+    <article className={`project-entry${ordinal === 0 ? " project-entry--lead" : ""}${hasImage ? " project-entry--image" : ""}`}>
+      <div className="project-number" aria-label={`Project ${String(ordinal + 1).padStart(2, "0")}`}>
+        {String(ordinal + 1).padStart(2, "0")}
       </div>
-      {project.image ? (
-        <div className="archive-image-frame"><img src={project.image} alt={`${project.title} project preview`} loading="lazy" /></div>
-      ) : (
-        <div className="archive-image-frame archive-image-frame--empty" aria-label={`No preview supplied for ${project.title}`}>
-          <span>{project.title}</span>
-          <small>source archive</small>
+      <div className="project-body">
+        <div className="project-heading-row">
+          <h3>{project.title}</h3>
+          <span className="project-date">{project.dates}</span>
         </div>
+        <p className="project-description">{project.description}</p>
+        <ul className="technology-list" aria-label={`Technologies used for ${project.title}`}>
+          {project.technologies.map((technology) => <li key={technology}>{technology}</li>)}
+        </ul>
+        <div className="project-links" aria-label={`${project.title} links`}>
+          {project.links.map((link) => (
+            <a href={link.href} target="_blank" rel="noreferrer" key={`${link.type}-${link.href}`}>
+              {link.type}
+            </a>
+          ))}
+        </div>
+      </div>
+      {hasImage && (
+        <figure className="project-visual">
+          <img src={project.image} alt={`${project.title} project preview`} loading="lazy" />
+        </figure>
       )}
-      <h3>{project.title}</h3>
-      <p>{project.description}</p>
-      <div className="tag-row">
-        {project.technologies.slice(0, 3).map((technology) => <span className="tag" key={technology}>{technology}</span>)}
-      </div>
-      <div className="archive-links">
-        {project.links.map((link) => (
-          <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.type} <Arrow /></a>
-        ))}
-      </div>
-    </motion.article>
+    </article>
   );
 }
 
 function App() {
   const [activeCategory, setActiveCategory] = useState(ALL);
-  const categories = useMemo(() => [ALL, ...Array.from(new Set(DATA.projects.map((project) => project.technologies[0])))], []);
-  const filteredProjects = activeCategory === ALL ? DATA.projects : DATA.projects.filter((project) => project.technologies[0] === activeCategory);
-  const featuredProjects = DATA.projects.slice(0, 3);
+  const categories = useMemo(
+    () => [ALL, ...Array.from(new Set(DATA.projects.map((project) => project.technologies[0])))],
+    [],
+  );
+  const filteredProjects = activeCategory === ALL
+    ? DATA.projects
+    : DATA.projects.filter((project) => project.technologies[0] === activeCategory);
+  const politicalNote = FIELD_NOTES.points.find((point) => point.title === "Fuck You, Human Rights Violator");
+  const otherNotes = FIELD_NOTES.points.filter((point) => point !== politicalNote);
 
   return (
-    <div className="claudia-layout">
+    <div className="portfolio-shell">
       <a className="skip-link" href="#content">Skip to content</a>
-      <nav className="top-nav" aria-label="Primary navigation">
-        <a className="claudia-logo" href="#top">Zaineedyou</a>
-        <div className="nav-links">
-          <a href="#archive">Archive</a>
+
+      <header className="top-nav">
+        <a className="site-mark" href="#top" aria-label={`${DATA.name}, home`}>{DATA.name}</a>
+        <nav aria-label="Main navigation" className="nav-links">
           <a href="#about">About</a>
+          <a href="#work">Work</a>
           <a href="#notes">Notes</a>
-          <a className="nav-button" href={DATA.contact.social.GitHub.url} target="_blank" rel="noreferrer">GitHub <Arrow /></a>
-        </div>
-      </nav>
+          <a className="nav-github" href={DATA.contact.social.GitHub.url} target="_blank" rel="noreferrer">GitHub</a>
+        </nav>
+      </header>
 
       <main id="content" className="page-wrap">
-        <section className="hero-card card" id="top" aria-labelledby="hero-title">
-          <div className="swoosh swoosh-hero" aria-hidden="true" />
+        <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero-copy">
-            <p className="date-sticker">PERSONAL / ARCHIVE</p>
-            <div className="hero-sticker">Zaineedyou</div>
-            <p className="hero-byline">Hi, this is my corner of the internet.</p>
-            <h1 id="hero-title">Software, experiments, notes, and things I refused to leave unfinished.</h1>
-            <p className="hero-lead">{DATA.summary}</p>
+            <p className="eyebrow">Personal archive / {DATA.location}</p>
+            <h1 id="hero-title">I build.<br /><span>Fuck silence.</span></h1>
+            <p className="hero-intro">Systems, experiments, and opinions with the volume left on.</p>
             <div className="hero-actions">
-              <a className="btn btn-tan" href="#archive">Open the archive <Arrow /></a>
-              <a className="btn btn-alt" href="#notes">Read the notes</a>
+              <a className="button button-primary" href="#work">See the work</a>
+              <a className="button button-plain" href="#notes">Read the notes</a>
             </div>
           </div>
-          <div className="hero-art">
-            <img src={DATA.avatarUrl} alt={DATA.name} />
-            <span className="hero-caption">{DATA.location} / still building</span>
+          <figure className="hero-art">
+            <div className="hero-image-wrap">
+              <img src={DATA.avatarUrl} alt={DATA.name} fetchPriority="high" />
+            </div>
+            <figcaption><span>{DATA.name}</span><span>{DATA.location} / still building</span></figcaption>
+          </figure>
+          <div className="hero-foot" aria-hidden="true">
+            <span>Code</span><span>Memory</span><span>Constraints</span><span>Criticism</span>
           </div>
         </section>
 
-        <div className="stripbar" aria-label="Archive categories">
-          <strong>#PERSONALARCHIVE</strong>
-          <span>Code · memory · constraints · criticism</span>
-        </div>
-
-        <section className="metrics" aria-label="Archive counts">
-          <div className="card metric"><strong>{DATA.projects.length}</strong><span>project entries</span></div>
-          <div className="card metric"><strong>{DATA.skills.length}</strong><span>tools in rotation</span></div>
-          <div className="card metric"><strong>{FIELD_NOTES.points.length}</strong><span>field notes</span></div>
-          <div className="card metric"><strong>∞</strong><span>unfinished ideas</span></div>
-        </section>
-
-        <section className="section-block" id="about" aria-labelledby="about-title">
-          <div className="section-heading"><h2 id="about-title">About</h2><span className="sticker-note">Built under constraints</span></div>
-          <div className="about-grid">
-            <div className="card about-card">
-              <p className="large-copy">The constraint is often where the idea gets sharper.</p>
-              <p>{DATA.summary}</p>
-            </div>
-            <div className="card skill-card">
-              <h3>Tools I keep close</h3>
-              <div className="tag-cloud">{DATA.skills.map((skill) => <span className="pill" key={skill.name}>{skill.name}</span>)}</div>
-            </div>
+        <section className="about-section section-block" id="about" aria-labelledby="about-title">
+          <div className="section-title">
+            <p className="eyebrow">The person behind the commits</p>
+            <h2 id="about-title">About</h2>
+          </div>
+          <div className="about-copy">
+            <p className="about-role">{DATA.description}</p>
+            <p className="about-manifesto">The constraint is often where the idea gets sharper.</p>
+            <p className="body-copy">{DATA.summary}</p>
+            <a className="location-link" href={DATA.locationLink} target="_blank" rel="noreferrer">Based in {DATA.location}</a>
+          </div>
+          <div className="skills-block">
+            <h3>Tools I keep close</h3>
+            <ul className="skill-list">
+              {DATA.skills.map((skill) => <li key={skill.name}>{skill.name}</li>)}
+            </ul>
           </div>
         </section>
 
-        <section className="section-block" id="archive" aria-labelledby="archive-title">
-          <div className="section-heading"><h2 id="archive-title">Archive</h2><span className="sticker-note">Things I built, broke, and kept</span></div>
-          <div className="featured-grid">
-            {featuredProjects.map((project, index) => <ProjectCard project={project} index={index} key={project.title} />)}
+        <section className="work-section section-block" id="work" aria-labelledby="work-title">
+          <div className="section-title section-title--work">
+            <p className="eyebrow">Things I built, broke, and kept</p>
+            <h2 id="work-title">Selected work<br /><span>and the whole archive.</span></h2>
           </div>
-          <div className="archive-index-header">
-            <h3>Every entry</h3>
-            <div className="filter-tabs" role="tablist" aria-label="Filter archive by primary technology">
-              {categories.map((category) => <button key={category} role="tab" type="button" aria-selected={activeCategory === category} onClick={() => setActiveCategory(category)}>{category}</button>)}
-            </div>
-          </div>
-          <div className="index-list">
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project, index) => (
-                <motion.article className="index-row" key={project.title} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-                  <span className="index-number">{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{project.title}</strong>
-                  <span>{project.technologies.join(" · ")}</span>
-                  <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}>Open <Arrow /></a>
-                </motion.article>
+          <div className="archive-controls">
+            <p>Filter by primary technology</p>
+            <div className="filter-list" role="group" aria-label="Filter projects by primary technology">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className="filter-button"
+                  type="button"
+                  aria-pressed={activeCategory === category}
+                  onClick={() => setActiveCategory(category)}
+                >
+                  {category}
+                </button>
               ))}
-            </AnimatePresence>
-          </div>
-        </section>
-
-        <section className="section-block" id="notes" aria-labelledby="notes-title">
-          <div className="section-heading"><h2 id="notes-title">Field notes</h2><span className="sticker-note">No polished case study</span></div>
-          <div className="notes-grid">
-            <blockquote className="card quote-card"><p>“{FIELD_NOTES.quote}”</p><cite>Working principle</cite></blockquote>
-            <div className="note-stack">
-              {FIELD_NOTES.points.map((point, index) => <article className="card note-card" key={point.title}><span className="note-number">{String(index + 1).padStart(2, "0")}</span><div><h3>{point.title}</h3><p>{point.description}</p></div></article>)}
             </div>
           </div>
+          <p className="filter-status" role="status" aria-live="polite">
+            Showing {filteredProjects.length} {filteredProjects.length === 1 ? "project" : "projects"}
+            {activeCategory !== ALL ? ` tagged ${activeCategory}` : ""}
+          </p>
+          <div className="project-list">
+            {filteredProjects.map((project) => (
+              <ProjectEntry project={project} ordinal={DATA.projects.indexOf(project)} key={project.title} />
+            ))}
+          </div>
         </section>
 
-        <section className="card closing-card" aria-label="Closing note">
-          <div className="swoosh swoosh-closing" aria-hidden="true" />
+        <section className="notes-section section-block" id="notes" aria-labelledby="notes-title">
+          <div className="section-title">
+            <p className="eyebrow">Personal, technical, political</p>
+            <h2 id="notes-title">Field notes</h2>
+          </div>
+          <blockquote className="working-principle">
+            <p>“{FIELD_NOTES.quote}”</p>
+            <cite>Working principle</cite>
+          </blockquote>
+          {politicalNote && (
+            <article className="political-note" aria-labelledby="political-note-title">
+              <div className="political-note-heading">
+                <p className="eyebrow">Human rights / accountability</p>
+                <h3 id="political-note-title">{politicalNote.title}</h3>
+              </div>
+              <p>{politicalNote.description}</p>
+            </article>
+          )}
+          <div className="technical-notes">
+            {otherNotes.map((point, index) => (
+              <article className="technical-note" key={point.title}>
+                <span className="note-index">{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{point.title}</h3>
+                  <p>{point.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="closing-section" aria-label="Closing note">
+          <p className="eyebrow">Still building / still paying attention</p>
           <h2>Keep digging.<br /><span>There is more in here.</span></h2>
-          <a className="btn btn-dark" href="#top">Back to top <Arrow /></a>
+          <a className="button button-inverse" href={DATA.contact.social.GitHub.url} target="_blank" rel="noreferrer">Find me on GitHub</a>
         </section>
       </main>
 
-      <footer className="footer page-wrap">
-        <div><strong className="claudia-logo">Zaineedyou</strong><p>Personal space, project archive, and occasional refusal to shut up.</p></div>
-        <div className="footer-links"><a href={DATA.contact.social.GitHub.url} target="_blank" rel="noreferrer">GitHub</a><a href={DATA.contact.social.Discord.url} target="_blank" rel="noreferrer">Discord</a><a href={DATA.contact.social.Instagram.url} target="_blank" rel="noreferrer">Instagram</a></div>
-        <span>© {new Date().getFullYear()} {DATA.name}</span>
+      <footer className="site-footer page-wrap">
+        <div className="footer-identity">
+          <a className="site-mark" href="#top">{DATA.name}</a>
+          <p>Personal space, project archive, and occasional refusal to shut up.</p>
+        </div>
+        <nav className="social-links" aria-label="Social links">
+          {Object.values(DATA.contact.social).map((social) => (
+            <a href={social.url} target="_blank" rel="noreferrer" key={social.name}>{social.name}</a>
+          ))}
+        </nav>
+        <p className="copyright">© {new Date().getFullYear()} {DATA.name}</p>
       </footer>
     </div>
   );
