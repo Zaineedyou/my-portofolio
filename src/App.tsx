@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DATA, type Project } from "./data/resume";
 import { FIELD_NOTES } from "./data/fieldNotes";
 import "./index.css";
@@ -41,6 +41,52 @@ function ProjectEntry({ project, ordinal }: { project: Project; ordinal: number 
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const portfolioContentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let disposed = false;
+    let completed = false;
+    let fallbackTimer = 0;
+    let revealTimer = 0;
+    const startedAt = performance.now();
+    const finish = () => {
+      if (disposed || completed) return;
+      completed = true;
+      window.clearTimeout(fallbackTimer);
+      window.clearTimeout(revealTimer);
+      setIsLoading(false);
+    };
+
+    fallbackTimer = window.setTimeout(finish, 1600);
+    const heroImageReady = new Promise<void>((resolve) => {
+      const image = new window.Image();
+      const settle = () => resolve();
+      image.addEventListener("load", settle, { once: true });
+      image.addEventListener("error", settle, { once: true });
+      image.src = DATA.avatarUrl;
+      if (image.complete) settle();
+    });
+    const fontsReady = document.fonts?.ready ?? Promise.resolve();
+
+    void Promise.allSettled([fontsReady, heroImageReady]).then(() => {
+      if (disposed || completed) return;
+      const remaining = Math.max(0, 420 - (performance.now() - startedAt));
+      revealTimer = window.setTimeout(finish, remaining);
+    });
+
+    return () => {
+      disposed = true;
+      window.clearTimeout(fallbackTimer);
+      window.clearTimeout(revealTimer);
+    };
+  }, []);
+  useEffect(() => {
+    const content = portfolioContentRef.current;
+    if (!content) return;
+    if (isLoading) content.setAttribute("inert", "");
+    else content.removeAttribute("inert");
+  }, [isLoading]);
+
   const [activeCategory, setActiveCategory] = useState(ALL);
   const categories = useMemo(
     () => [ALL, ...Array.from(new Set(DATA.projects.map((project) => project.technologies[0])))],
@@ -53,7 +99,18 @@ function App() {
   const otherNotes = FIELD_NOTES.points.filter((point) => point !== politicalNote);
 
   return (
-    <div className="portfolio-shell">
+    <div className={`portfolio-shell${isLoading ? " portfolio-shell--loading" : ""}`}>
+      {isLoading && (
+        <div className="loading-screen" role="status" aria-live="polite">
+          <div className="loading-content">
+            <p className="loading-eyebrow">Personal archive / {DATA.location}</p>
+            <p className="loading-brand">{DATA.name}</p>
+            <div className="loading-track" aria-hidden="true"><span /></div>
+            <p className="loading-status">Opening the archive</p>
+          </div>
+        </div>
+      )}
+      <div className="portfolio-content" ref={portfolioContentRef}>
       <a className="skip-link" href="#content">Skip to content</a>
 
       <header className="top-nav">
@@ -187,6 +244,7 @@ function App() {
         </nav>
         <p className="copyright">© {new Date().getFullYear()} {DATA.name}</p>
       </footer>
+      </div>
     </div>
   );
 }
