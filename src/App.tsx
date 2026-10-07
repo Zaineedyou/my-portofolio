@@ -49,6 +49,8 @@ function App() {
   const filteredProjects = activeCategory === ALL
     ? DATA.projects
     : DATA.projects.filter((project) => project.technologies[0] === activeCategory);
+  const politicalNote = FIELD_NOTES.points.find((point) => point.title === "Fuck You, Human Rights Violator");
+  const otherNotes = FIELD_NOTES.points.filter((point) => point !== politicalNote);
 
   return (
     <div className="portfolio-shell">
@@ -141,20 +143,29 @@ function App() {
             <p>“{FIELD_NOTES.quote}”</p>
             <cite>Working principle</cite>
           </blockquote>
-          <div className="field-notes-grid">
-            {FIELD_NOTES.points.map((point, index) => {
-              const isPoliticalNote = point.title === "Fuck You, Human Rights Violator";
-              const number = String(index + 1).padStart(2, "0");
-              return (
-                <article className={`field-note${isPoliticalNote ? " political-note" : ""}`} key={point.title}>
-                  <span className="note-index">{number}</span>
-                  <div className="field-note-copy">
+          <div className="field-notes-layout">
+            <div className="technical-notes">
+              {otherNotes.map((point, index) => (
+                <article className="technical-note" key={point.title}>
+                  <span className="note-index">{String(index + 1).padStart(2, "0")}</span>
+                  <div>
                     <h3>{point.title}</h3>
                     <p>{point.description}</p>
                   </div>
                 </article>
-              );
-            })}
+              ))}
+            </div>
+            {politicalNote && (
+              <article className="political-note" aria-labelledby="political-note-title">
+                <span className="political-note-index">
+                  {String(FIELD_NOTES.points.indexOf(politicalNote) + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 id="political-note-title">{politicalNote.title}</h3>
+                  <p>{politicalNote.description}</p>
+                </div>
+              </article>
+            )}
           </div>
         </section>
 
