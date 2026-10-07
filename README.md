@@ -1,10 +1,10 @@
 # Zaineedyou | Personal Archive
 
-A personal software archive for Zaineedyou. It holds software, experiments, field notes, and work that is still allowed to be unfinished. This is not a recruiter landing page or a client pitch deck.
+A personal software portfolio showing projects, field notes, and the Android-based workbench behind them. This is not a recruiter landing page or a client pitch deck.
 
 ## Stack
 
-Vite, React, TypeScript, and native CSS. The site uses the two locally hosted typefaces from Claudia Ó Loki, plus the portfolio's existing image assets. No new UI package is required.
+Vite, React, TypeScript, and native CSS. Claudia Marker and Claudia Tag are self-hosted from `public/fonts/`. The visual treatment adapts the rounded cards, print dots, and hero swoosh from the user's Claudia Ó Loki project.
 
 ## Run locally
 
@@ -24,10 +24,8 @@ npm run preview
 
 ## Design direction
 
-The visual language is an editorial poster/archive inspired by Claudia Ó Loki: warm paper, black ink, the Claudia tan accent, bold cutout typography, and a restrained print-dot texture. Claudia Marker and Claudia Tag are self-hosted in `public/fonts/`. The page uses native CSS rather than pretending this aesthetic is an official component system.
-
-The portfolio's original project entries, technical notes, links, summary, and political criticism remain in their source data. The political field note is displayed verbatim. Project imagery is used only when a real preview exists in the data. Mobile uses a dedicated stacked layout, visible keyboard focus, and reduced-motion support.
+Warm paper, black ink, and Claudia tan form the palette. A quiet version of Claudia Ó Loki's swoosh sits behind the hero, while rounded 28px cards frame the project archive and field notes. Claudia Tag is used for longer descriptions and notes; Claudia Marker remains the display face. Mobile has a stacked layout, visible keyboard focus, and reduced-motion support.
 
 ## Content source
 
-Project data lives in `src/data/resume.ts`. Field notes live in `src/data/fieldNotes.ts`. Change those files when the archive changes. The visual layer should not invent project facts, statistics, testimonials, or contact details.
+Project data lives in `src/data/resume.ts`. Field notes live in `src/data/fieldNotes.ts`. Those original descriptions and political notes remain the content source. The portfolio hides the CaineGO and ClaudiaRPC-Rust preview images without changing their project data.

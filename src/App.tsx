@@ -4,9 +4,10 @@ import { FIELD_NOTES } from "./data/fieldNotes";
 import "./index.css";
 
 const ALL = "All";
+const HIDDEN_PROJECT_PREVIEWS = new Set(["CaineGO", "ClaudiaRPC-Rust"]);
 
 function ProjectEntry({ project, ordinal }: { project: Project; ordinal: number }) {
-  const hasImage = Boolean(project.image);
+  const hasImage = Boolean(project.image) && !HIDDEN_PROJECT_PREVIEWS.has(project.title);
 
   return (
     <article className={`project-entry${ordinal === 0 ? " project-entry--lead" : ""}${hasImage ? " project-entry--image" : ""}`}>
@@ -67,10 +68,13 @@ function App() {
 
       <main id="content" className="page-wrap">
         <section className="hero" id="top" aria-labelledby="hero-title">
+          <svg className="hero-swoosh" viewBox="0 0 500 300" fill="none" aria-hidden="true" preserveAspectRatio="none">
+            <path d="M-30 240C150 150 330 230 540 110" stroke="currentColor" strokeWidth="40" strokeLinecap="round" />
+          </svg>
           <div className="hero-copy">
             <p className="eyebrow">Personal archive / {DATA.location}</p>
-            <h1 id="hero-title">I build.<br /><span>Fuck silence.</span></h1>
-            <p className="hero-intro">Systems, experiments, and opinions with the volume left on.</p>
+            <h1 id="hero-title">I build software<br /><span>on Android.</span></h1>
+            <p className="hero-intro">I work on backend systems and developer tools using Termux.</p>
             <div className="hero-actions">
               <a className="button button-primary" href="#work">See the work</a>
               <a className="button button-plain" href="#notes">Read the notes</a>
@@ -94,7 +98,6 @@ function App() {
           </div>
           <div className="about-copy">
             <p className="about-role">{DATA.description}</p>
-            <p className="about-manifesto">The constraint is often where the idea gets sharper.</p>
             <p className="body-copy">{DATA.summary}</p>
             <a className="location-link" href={DATA.locationLink} target="_blank" rel="noreferrer">Based in {DATA.location}</a>
           </div>
@@ -112,8 +115,7 @@ function App() {
             <h2 id="work-title">Selected work<br /><span>and the whole archive.</span></h2>
           </div>
           <div className="archive-controls">
-            <p>Filter by primary technology</p>
-            <div className="filter-list" role="group" aria-label="Filter projects by primary technology">
+            <div className="filter-list" role="group" aria-label="Project technology filters">
               {categories.map((category) => (
                 <button
                   key={category}
@@ -127,10 +129,6 @@ function App() {
               ))}
             </div>
           </div>
-          <p className="filter-status" role="status" aria-live="polite">
-            Showing {filteredProjects.length} {filteredProjects.length === 1 ? "project" : "projects"}
-            {activeCategory !== ALL ? ` tagged ${activeCategory}` : ""}
-          </p>
           <div className="project-list">
             {filteredProjects.map((project) => (
               <ProjectEntry project={project} ordinal={DATA.projects.indexOf(project)} key={project.title} />
@@ -140,7 +138,6 @@ function App() {
 
         <section className="notes-section section-block" id="notes" aria-labelledby="notes-title">
           <div className="section-title">
-            <p className="eyebrow">Personal, technical, political</p>
             <h2 id="notes-title">Field notes</h2>
           </div>
           <blockquote className="working-principle">
@@ -179,7 +176,6 @@ function App() {
       <footer className="site-footer page-wrap">
         <div className="footer-identity">
           <a className="site-mark" href="#top">{DATA.name}</a>
-          <p>Personal space, project archive, and occasional refusal to shut up.</p>
         </div>
         <nav className="social-links" aria-label="Social links">
           {Object.values(DATA.contact.social).map((social) => (
