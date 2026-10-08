@@ -4,7 +4,7 @@ A personal software portfolio showing projects, field notes, and the Android-bas
 
 ## Stack
 
-Vite, React, TypeScript, and native CSS. Claudia Marker and Claudia Tag are self-hosted from `public/fonts/`. The visual treatment adapts the rounded cards, visible shadows, print dots, and hero swoosh from the user's Claudia Ó Loki project.
+Vite, React, TypeScript, native CSS, and Three.js/WebGL for the 3D turntable. Claudia Marker and Claudia Tag are self-hosted from `public/fonts/`. The visual treatment adapts the rounded cards, visible shadows, print dots, and hero swoosh from the user's Claudia Ó Loki project.
 
 ## Run locally
 
@@ -28,7 +28,7 @@ Warm paper, black ink, and Claudia tan form the palette. The Working Principle q
 
 ## For Mom
 
-Open `/#for-mom` from the portfolio or use the heart-marked **For Mom** button. The page pairs the supplied poem, presented in a rounded card, with an original CSS 3D turntable and accessible play, pause, and seek controls. The player serves the source segment from 0:07 to 4:22 as Ogg Opus with a 2-second fade-in at `public/audio/Number One For Me-Maher Zain.ogg`; the `.ogg` extension lets Vercel serve it as browser-playable audio.
+Open `/#for-mom` from the portfolio or use the heart-marked **For Mom** button. The page pairs the supplied poem, presented in a rounded card, with a Three.js/WebGL turntable built from real 3D meshes and accessible play, pause, and seek controls. Drag the model to inspect its geometry; playback spins the vinyl and moves the tonearm. The player serves the source segment from 0:07 to 4:22 as Ogg Opus with a 2-second fade-in at `public/audio/Number One For Me-Maher Zain.ogg`; the `.ogg` extension lets Vercel serve it as browser-playable audio.
 
 ## Content source
 

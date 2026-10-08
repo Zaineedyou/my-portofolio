@@ -1,4 +1,6 @@
-import { useRef, useState, type ChangeEvent } from "react";
+import { lazy, Suspense, useRef, useState, type ChangeEvent } from "react";
+
+const Turntable3D = lazy(() => import("./Turntable3D"));
 
 const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.ogg";
 
@@ -59,22 +61,9 @@ export default function ForMomPage() {
           </div>
 
           <section className="mom-player" aria-label="Music player">
-            <div className="mom-turntable-stage">
-              <div className={`mom-turntable${isPlaying ? " is-playing" : ""}`} aria-hidden="true">
-                <div className="mom-platter">
-                  <div className="mom-vinyl">
-                    <div className="mom-record-label"><span>ONE</span><small>FOR MOM</small></div>
-                    <span className="mom-spindle" />
-                  </div>
-                </div>
-                <div className="mom-tonearm-pivot" />
-                <div className={`mom-tonearm${isPlaying ? " mom-tonearm--playing" : ""}`}>
-                  <span className="mom-tonearm-head"><i /></span>
-                </div>
-                <div className="mom-turntable-button" />
-                <div className="mom-turntable-mark">SIDE A</div>
-              </div>
-            </div>
+            <Suspense fallback={<div className="mom-turntable-stage" aria-hidden="true" />}>
+              <Turntable3D isPlaying={isPlaying} />
+            </Suspense>
 
             <div className="mom-player-info">
               <div className="mom-track-heading">
