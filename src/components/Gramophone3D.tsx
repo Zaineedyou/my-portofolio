@@ -138,6 +138,10 @@ function makeGramophone() {
   }
   addCylinder(record, 0.16, 0.16, 0.014, [0, 0.087, 0], labelMaterial, 48);
   addCylinder(record, 0.035, 0.035, 0.105, [0, 0.135, 0], brassLight, 24);
+  // An off-center brass mark makes the record's rotation perceptible.
+  const rotationCue = new THREE.Mesh(new THREE.SphereGeometry(0.028, 14, 10), brassLight);
+  rotationCue.position.set(0.48, 0.09, 0);
+  record.add(rotationCue);
 
   // The fixed pivot carries a separate arm so its stylus can lift and lower.
   addCylinder(root, 0.14, 0.16, 0.08, [0.79, 1.34, 0.46], brassShadow, 32);
@@ -293,7 +297,7 @@ export default function Gramophone3D({ isPlaying }: Gramophone3DProps) {
       const verticalFov = THREE.MathUtils.degToRad(camera.fov);
       const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
       const limitingFov = Math.min(verticalFov, horizontalFov);
-      const distance = (sphere.radius / Math.sin(limitingFov / 2)) * 0.96;
+      const distance = (sphere.radius / Math.sin(limitingFov / 2)) * 0.84;
       const viewDirection = new THREE.Vector3(0.48, 0.38, 0.79).normalize();
       camera.position.copy(viewDirection.multiplyScalar(distance));
       camera.lookAt(0, 0, 0);
