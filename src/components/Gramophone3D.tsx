@@ -139,9 +139,10 @@ function makeGramophone() {
   addCylinder(record, 0.16, 0.16, 0.014, [0, 0.087, 0], labelMaterial, 48);
   addCylinder(record, 0.035, 0.035, 0.105, [0, 0.135, 0], brassLight, 24);
   // An off-center brass mark makes the record's rotation perceptible.
-  const rotationCue = new THREE.Mesh(new THREE.SphereGeometry(0.028, 14, 10), brassLight);
+  const rotationCue = new THREE.Mesh(new THREE.SphereGeometry(0.045, 14, 10), brassLight);
   rotationCue.position.set(0.48, 0.09, 0);
   record.add(rotationCue);
+  addBox(record, [0.14, 0.01, 0.03], [0.04, 0.101, 0], brassShadow, 0.004);
 
   // The fixed pivot carries a separate arm so its stylus can lift and lower.
   addCylinder(root, 0.14, 0.16, 0.08, [0.79, 1.34, 0.46], brassShadow, 32);
@@ -297,7 +298,7 @@ export default function Gramophone3D({ isPlaying }: Gramophone3DProps) {
       const verticalFov = THREE.MathUtils.degToRad(camera.fov);
       const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
       const limitingFov = Math.min(verticalFov, horizontalFov);
-      const distance = (sphere.radius / Math.sin(limitingFov / 2)) * 0.84;
+      const distance = (sphere.radius / Math.sin(limitingFov / 2)) * 0.96;
       const viewDirection = new THREE.Vector3(0.48, 0.38, 0.79).normalize();
       camera.position.copy(viewDirection.multiplyScalar(distance));
       camera.lookAt(0, 0, 0);
@@ -332,18 +333,21 @@ export default function Gramophone3D({ isPlaying }: Gramophone3DProps) {
     const startRotation = tonearm.rotation.z;
     const targetRotation = isPlaying ? 0 : -0.45;
     const startTime = performance.now();
+    let previousTime = startTime;
     let frame = 0;
 
     const animate = (now: number) => {
       const progress = reduceMotion ? 1 : Math.min((now - startTime) / 360, 1);
       const eased = progress * progress * (3 - 2 * progress);
       tonearm.rotation.z = startRotation + (targetRotation - startRotation) * eased;
-      if (isPlaying && !reduceMotion && recordRef.current) {
-        recordRef.current.rotation.y += 0.105;
+      const elapsed = Math.min((now - previousTime) / 1000, 0.05);
+      previousTime = now;
+      if (isPlaying && recordRef.current) {
+        recordRef.current.rotation.y += elapsed * Math.PI * 2 * 1.3;
       }
       render();
 
-      if (progress < 1 || (isPlaying && !reduceMotion)) {
+      if (progress < 1 || isPlaying) {
         frame = requestAnimationFrame(animate);
       }
     };
