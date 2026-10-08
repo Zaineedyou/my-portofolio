@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
+const RECORD_RPM = 45;
+
 function disposeTree(root: THREE.Object3D) {
   const geometries = new Set<THREE.BufferGeometry>();
   const materials = new Set<THREE.Material>();
@@ -343,7 +345,7 @@ export default function Gramophone3D({ isPlaying }: Gramophone3DProps) {
       const elapsed = Math.min((now - previousTime) / 1000, 0.05);
       previousTime = now;
       if (isPlaying && recordRef.current) {
-        recordRef.current.rotation.y += elapsed * Math.PI * 2 * 1.3;
+        recordRef.current.rotation.y += elapsed * Math.PI * 2 * (RECORD_RPM / 60);
       }
       render();
 
