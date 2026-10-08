@@ -28,7 +28,7 @@ Warm paper, black ink, and Claudia tan form the palette. The Working Principle q
 
 ## For Mom
 
-Open `/#for-mom` from the portfolio or use the heart-marked **For Mom** button. The page pairs the supplied poem, presented in a rounded card, with an original CSS 3D turntable and accessible play, pause, and seek controls. The player uses the full Ogg Opus track supplied for the page at `public/audio/Number One For Me-Maher Zain.ogg`; the `.ogg` extension lets Vercel serve it as browser-playable audio.
+Open `/#for-mom` from the portfolio or use the heart-marked **For Mom** button. The page pairs the supplied poem, presented in a rounded card, with an original CSS 3D turntable and accessible play, pause, and seek controls. The player serves the source segment from 0:07 to 4:22 as Ogg Opus with a 2-second fade-in at `public/audio/Number One For Me-Maher Zain.ogg`; the `.ogg` extension lets Vercel serve it as browser-playable audio.
 
 ## Content source
 

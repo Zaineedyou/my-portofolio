@@ -16,7 +16,7 @@ Claudia Marker handles headlines; Claudia Tag is used for labels and longer auth
 
 Cards use a 28px radius and the portfolio's hard offset shadow. The Working Principle quote is a full-width landscape card with its label set beside the quote. Below it, notes `01` and `02` stack in the left column while the political criticism is the dark note `03` in the right column, without an extra eyebrow; mobile stacks them in source order.
 
-The initial loading screen follows Claudia Ó Loki's boot card, swoosh, outlined wordmark, rounded percentage bar, and fade-out. The centered `Zaineedyou` wordmark is sized to stay inside the card. The progress interpolates over 4.4 seconds and the fade completes the five-second sequence; the bar remains smooth with reduced motion enabled.
+The initial loading screen follows Claudia Ó Loki's boot card, swoosh, outlined wordmark, rounded percentage bar, and fade-out. The centered `Zaineedyou` wordmark is sized to stay inside the card. The progress and closing transition complete a four-second sequence; the bar remains smooth with reduced motion enabled.
 
 CaineGO and ClaudiaRPC-Rust project entries and links remain, but their two project images are not shown. Category filters, keyboard feedback, restrained hero motion, reduced-motion support, and mobile reflow remain.
 
@@ -26,4 +26,4 @@ Project, technology, contact, summary, and field-note data remain in `src/data/r
 
 ## For Mom
 
-The `#for-mom` route adds a quiet page using the same paper, Claudia fonts, tan, rounded corners, and visible offset shadows. Its turntable is original CSS 3D with a smooth record rotation while audio plays; the tonearm pivots down into the record grooves on playback. The custom controls support play, pause, and seeking. The provided poem is rendered as supplied in one rounded card. The full user-supplied Opus track is served from `public/audio/Number One For Me-Maher Zain.ogg` so Vercel returns an audio MIME type.
+The `#for-mom` route adds a quiet page using the same paper, Claudia fonts, tan, rounded corners, and visible offset shadows. Its turntable is original CSS 3D with a pronounced perspective, layered depth, and a smooth record rotation while audio plays; the tonearm pivots down into the record grooves on playback. The custom controls support play, pause, and seeking. The provided poem is rendered as supplied in one rounded card. The user-supplied Opus audio segment from 0:07 to 4:22 has a 2-second fade-in and is served from `public/audio/Number One For Me-Maher Zain.ogg` so Vercel returns an audio MIME type.

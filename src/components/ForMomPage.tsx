@@ -111,7 +111,7 @@ export default function ForMomPage() {
                 <span className="mom-time" aria-hidden="true">{formatTime(duration)}</span>
               </div>
               <p className="mom-audio-status" role="status" aria-live="polite">
-                {playerError || "Full track uploaded for this page. The player uses Ogg Opus audio."}
+                {playerError || "Excerpt: 0:07–4:22 with a 2-second fade-in. Ogg Opus audio."}
               </p>
               <audio
                 ref={audioRef}

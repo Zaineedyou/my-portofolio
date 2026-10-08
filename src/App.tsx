@@ -59,7 +59,10 @@ function App() {
     let closeTimer = 0;
     let removeTimer = 0;
     const startedAt = Date.now();
-    const progressDuration = 4400;
+    const totalLoadingDuration = 4000;
+    const closeLeadDuration = 150;
+    const closeFadeDuration = 450;
+    const progressDuration = totalLoadingDuration - closeLeadDuration - closeFadeDuration;
     const fillDuration = progressDuration - 200;
     const stepImage = () => {
       if (!imageReady) {
@@ -83,8 +86,8 @@ function App() {
         setIsClosing(true);
         removeTimer = window.setTimeout(() => {
           if (!disposed) setIsLoading(false);
-        }, 450);
-      }, 150);
+        }, closeFadeDuration);
+      }, closeLeadDuration);
     };
 
     const image = new window.Image();

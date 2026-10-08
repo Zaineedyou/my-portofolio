@@ -532,37 +532,37 @@ button { color: inherit; }
   background: var(--surface);
   box-shadow: var(--shadow-card);
 }
-.mom-turntable-stage { perspective: 1100px; padding: 10px 12px 22px; }
+.mom-turntable-stage { perspective: 760px; transform-style: preserve-3d; padding: 10px 12px 22px; }
 .mom-turntable {
   position: relative;
   width: 100%;
   aspect-ratio: 1.36;
-  transform: rotateX(10deg) rotateZ(-2deg);
+  transform: rotateX(18deg) rotateY(-5deg) rotateZ(-2deg);
   transform-style: preserve-3d;
   border: 2px solid var(--ink);
   border-radius: 26px;
   background: linear-gradient(145deg, #d7a17a 0%, #c48a62 57%, #a96e4a 100%);
-  box-shadow: 0 13px 0 #75482d, 0 23px 28px rgba(10, 10, 10, .22);
+  box-shadow: 0 20px 0 #75482d, 0 34px 38px rgba(10, 10, 10, .26);
   transition: transform 380ms cubic-bezier(.2, .7, .2, 1), box-shadow 380ms ease;
 }
 .mom-turntable::before {
   position: absolute;
   z-index: -1;
   inset: 0;
-  transform: translate3d(0, 10px, -13px);
+  transform: translate3d(0, 18px, -13px);
   border: 2px solid var(--ink);
   border-radius: inherit;
   background: #8c593a;
   content: "";
 }
-.mom-player:hover .mom-turntable { transform: rotateX(7deg) rotateZ(-1deg) translateY(-3px); box-shadow: 0 16px 0 #75482d, 0 27px 32px rgba(10, 10, 10, .24); }
+.mom-player:hover .mom-turntable { transform: rotateX(14deg) rotateY(-3deg) rotateZ(-1deg) translateY(-5px) translateZ(10px); box-shadow: 0 24px 0 #75482d, 0 40px 42px rgba(10, 10, 10, .28); }
 .mom-platter {
   position: absolute;
   top: 50%;
   left: 7%;
   width: 66%;
   aspect-ratio: 1;
-  transform: translateY(-50%) translateZ(18px);
+  transform: translateY(-50%) translateZ(22px);
   padding: 3.5%;
   border: 2px solid #171717;
   border-radius: 50%;
