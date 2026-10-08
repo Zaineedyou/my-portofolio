@@ -25,7 +25,7 @@ export default function ForMomPage() {
         await audio.play();
         setPlayerError("");
       } catch {
-        setPlayerError("Audio could not start. Check that the uploaded audio file is present.");
+        setPlayerError("Audio tidak dapat diputar. Periksa berkas audio di server.");
       }
       return;
     }
@@ -79,7 +79,6 @@ export default function ForMomPage() {
             <div className="mom-player-info">
               <div className="mom-track-heading">
                 <div>
-                  <p className="mom-player-kicker">On the turntable</p>
                   <h2>Number One For Me</h2>
                   <p className="mom-track-artist">Maher Zain</p>
                 </div>
@@ -110,21 +109,23 @@ export default function ForMomPage() {
                 />
                 <span className="mom-time" aria-hidden="true">{formatTime(duration)}</span>
               </div>
-              <p className="mom-audio-status" role="status" aria-live="polite">
-                {playerError || "Excerpt: 0:07–4:22 with a 2-second fade-in. Ogg Opus audio."}
-              </p>
+              {playerError && (
+                <p className="mom-audio-status" role="status" aria-live="polite">
+                  {playerError}
+                </p>
+              )}
               <audio
                 ref={audioRef}
                 className="mom-audio"
                 preload="metadata"
-                aria-label="Number One For Me by Maher Zain, full uploaded audio"
+                aria-label="Number One For Me by Maher Zain, excerpt from 0:07 to 4:22"
                 onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
                 onLoadedMetadata={(event) => syncDuration(event.currentTarget)}
                 onDurationChange={(event) => syncDuration(event.currentTarget)}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 onEnded={() => setIsPlaying(false)}
-                onError={() => setPlayerError("The uploaded audio could not be loaded. Check the file path in public/audio.")}
+                onError={() => setPlayerError("Berkas audio tidak dapat dimuat. Periksa berkas di public/audio.")}
               >
                 <source src={AUDIO_SRC} type="audio/ogg; codecs=opus" />
               </audio>
@@ -158,6 +159,11 @@ export default function ForMomPage() {
             </p>
           </blockquote>
         </section>
+
+        <footer className="mom-footer">
+          <a className="mom-back-link" href="#top">Kembali ke portofolio</a>
+          <span>{new Date().getFullYear()} / Halaman untuk Ibu</span>
+        </footer>
 
       </div>
     </main>
