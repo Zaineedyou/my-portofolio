@@ -123,26 +123,33 @@ function makeGramophone() {
     }
   }
 
-  // Heavy platter, shellac record, center label, and spindle.
-  addCylinder(root, 0.65, 0.65, 0.075, [0.03, 1.34, -0.035], brassShadow, 64);
-  addCylinder(root, 0.57, 0.57, 0.045, [0.03, 1.397, -0.035], recordMaterial, 64);
+  // The platter and its shellac record turn together only during playback.
+  const record = new THREE.Group();
+  record.position.set(0.03, 1.34, -0.035);
+  root.add(record);
+  addCylinder(record, 0.65, 0.65, 0.075, [0, 0, 0], brassShadow, 64);
+  addCylinder(record, 0.57, 0.57, 0.045, [0, 0.057, 0], recordMaterial, 64);
   const grooveMaterial = new THREE.MeshStandardMaterial({ color: 0x47413a, roughness: 0.42, metalness: 0.24 });
   for (const radius of [0.34, 0.39, 0.44, 0.49]) {
     const groove = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.004, 4, 72), grooveMaterial);
     groove.rotation.x = Math.PI / 2;
-    groove.position.set(0.03, 1.421, -0.035);
-    root.add(groove);
+    groove.position.y = 0.081;
+    record.add(groove);
   }
-  addCylinder(root, 0.16, 0.16, 0.014, [0.03, 1.427, -0.035], labelMaterial, 48);
-  addCylinder(root, 0.035, 0.035, 0.105, [0.03, 1.475, -0.035], brassLight, 24);
+  addCylinder(record, 0.16, 0.16, 0.014, [0, 0.087, 0], labelMaterial, 48);
+  addCylinder(record, 0.035, 0.035, 0.105, [0, 0.135, 0], brassLight, 24);
 
-  // Pivot, two tonearm sections, headshell, and stylus.
+  // The fixed pivot carries a separate arm so its stylus can lift and lower.
   addCylinder(root, 0.14, 0.16, 0.08, [0.79, 1.34, 0.46], brassShadow, 32);
   addCylinder(root, 0.085, 0.085, 0.16, [0.79, 1.45, 0.46], brass, 28);
-  addRod(root, new THREE.Vector3(0.79, 1.52, 0.46), new THREE.Vector3(0.73, 1.65, 0.23), 0.035, brassLight);
-  addRod(root, new THREE.Vector3(0.73, 1.65, 0.23), new THREE.Vector3(0.48, 1.57, -0.18), 0.025, brassLight);
-  addBox(root, [0.18, 0.045, 0.09], [0.47, 1.56, -0.19], blackMetal, 0.018);
-  addRod(root, new THREE.Vector3(0.42, 1.535, -0.22), new THREE.Vector3(0.37, 1.48, -0.27), 0.012, blackMetal);
+  const tonearm = new THREE.Group();
+  tonearm.position.set(0.79, 1.53, 0.46);
+  tonearm.rotation.z = -0.45;
+  root.add(tonearm);
+  addRod(tonearm, new THREE.Vector3(0, 0, 0), new THREE.Vector3(-0.06, 0.13, -0.23), 0.035, brassLight);
+  addRod(tonearm, new THREE.Vector3(-0.06, 0.13, -0.23), new THREE.Vector3(-0.31, 0.05, -0.64), 0.025, brassLight);
+  addBox(tonearm, [0.18, 0.045, 0.09], [-0.32, 0.04, -0.65], blackMetal, 0.018);
+  addRod(tonearm, new THREE.Vector3(-0.38, 0.03, -0.69), new THREE.Vector3(-0.38, -0.11, -0.69), 0.012, blackMetal);
 
   // Tall horn stand and a flared, hollow brass bell aimed up and toward the viewer.
   addCylinder(root, 0.17, 0.19, 0.09, [-0.72, 1.34, -0.42], brassShadow, 32);
@@ -190,11 +197,16 @@ function makeGramophone() {
   throat.rotation.x = Math.PI / 2;
   horn.add(throat);
 
-  return root;
+  return { root, tonearm, record };
 }
 
-export default function Gramophone3D() {
+type Gramophone3DProps = { isPlaying: boolean };
+
+export default function Gramophone3D({ isPlaying }: Gramophone3DProps) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const tonearmRef = useRef<THREE.Group | null>(null);
+  const recordRef = useRef<THREE.Group | null>(null);
+  const renderRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -252,7 +264,9 @@ export default function Gramophone3D() {
     disposeTree(roomEnvironment);
     pmrem.dispose();
 
-    const model = makeGramophone();
+    const { root: model, tonearm, record } = makeGramophone();
+    tonearmRef.current = tonearm;
+    recordRef.current = record;
     const sourceBounds = new THREE.Box3().setFromObject(model);
     const sourceCenter = sourceBounds.getCenter(new THREE.Vector3());
     model.position.sub(sourceCenter);
@@ -279,12 +293,13 @@ export default function Gramophone3D() {
       const verticalFov = THREE.MathUtils.degToRad(camera.fov);
       const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
       const limitingFov = Math.min(verticalFov, horizontalFov);
-      const distance = (sphere.radius / Math.sin(limitingFov / 2)) * 1.06;
+      const distance = (sphere.radius / Math.sin(limitingFov / 2)) * 0.96;
       const viewDirection = new THREE.Vector3(0.48, 0.38, 0.79).normalize();
       camera.position.copy(viewDirection.multiplyScalar(distance));
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
     };
+    renderRef.current = () => renderer.render(scene, camera);
 
     const observer = new ResizeObserver(fitCamera);
     observer.observe(mount);
@@ -298,8 +313,40 @@ export default function Gramophone3D() {
       environmentTexture.dispose();
       renderer.dispose();
       renderer.domElement.remove();
+      tonearmRef.current = null;
+      recordRef.current = null;
+      renderRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const tonearm = tonearmRef.current;
+    const render = renderRef.current;
+    if (!tonearm || !render) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const startRotation = tonearm.rotation.z;
+    const targetRotation = isPlaying ? 0 : -0.45;
+    const startTime = performance.now();
+    let frame = 0;
+
+    const animate = (now: number) => {
+      const progress = reduceMotion ? 1 : Math.min((now - startTime) / 360, 1);
+      const eased = progress * progress * (3 - 2 * progress);
+      tonearm.rotation.z = startRotation + (targetRotation - startRotation) * eased;
+      if (isPlaying && !reduceMotion && recordRef.current) {
+        recordRef.current.rotation.y += 0.105;
+      }
+      render();
+
+      if (progress < 1 || (isPlaying && !reduceMotion)) {
+        frame = requestAnimationFrame(animate);
+      }
+    };
+
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [isPlaying]);
 
   return (
     <div

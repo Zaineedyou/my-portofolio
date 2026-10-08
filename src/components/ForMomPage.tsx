@@ -62,7 +62,7 @@ export default function ForMomPage() {
 
           <section className="mom-player" aria-label="Music player">
             <Suspense fallback={<div className="mom-gramophone-stage" aria-hidden="true" />}>
-              <Gramophone3D />
+              <Gramophone3D isPlaying={isPlaying} />
             </Suspense>
 
             <div className="mom-player-info">
