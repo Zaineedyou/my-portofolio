@@ -25,7 +25,7 @@ function disposeTree(root: THREE.Object3D) {
   geometries.forEach((geometry) => geometry.dispose());
 }
 
-export default function Turntable3D() {
+export default function Gramophone3D() {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -187,7 +187,7 @@ export default function Turntable3D() {
 
   return (
     <div
-      className="mom-turntable-stage"
+      className="mom-gramophone-stage"
       ref={mountRef}
       role="img"
       aria-label="Gramofon vintage 3D dengan corong kuningan, kabinet kayu, piringan hitam, dan tonearm"

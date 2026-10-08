@@ -1,6 +1,6 @@
 import { lazy, Suspense, useRef, useState, type ChangeEvent } from "react";
 
-const Turntable3D = lazy(() => import("./Turntable3D"));
+const Gramophone3D = lazy(() => import("./Gramophone3D"));
 
 const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.ogg";
 
@@ -61,8 +61,8 @@ export default function ForMomPage() {
           </div>
 
           <section className="mom-player" aria-label="Music player">
-            <Suspense fallback={<div className="mom-turntable-stage" aria-hidden="true" />}>
-              <Turntable3D />
+            <Suspense fallback={<div className="mom-gramophone-stage" aria-hidden="true" />}>
+              <Gramophone3D />
             </Suspense>
 
             <div className="mom-player-info">
