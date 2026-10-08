@@ -62,7 +62,7 @@ export default function ForMomPage() {
 
           <section className="mom-player" aria-label="Music player">
             <Suspense fallback={<div className="mom-turntable-stage" aria-hidden="true" />}>
-              <Turntable3D isPlaying={isPlaying} />
+              <Turntable3D />
             </Suspense>
 
             <div className="mom-player-info">
