@@ -87,12 +87,12 @@ function addRod(
 
 function makeGramophone() {
   const root = new THREE.Group();
-  const wood = new THREE.MeshStandardMaterial({ color: 0x98582f, roughness: 0.44, metalness: 0.08 });
-  const woodLight = new THREE.MeshStandardMaterial({ color: 0xb97343, roughness: 0.42, metalness: 0.06 });
-  const woodDark = new THREE.MeshStandardMaterial({ color: 0x62371f, roughness: 0.5, metalness: 0.06 });
+  const wood = new THREE.MeshStandardMaterial({ color: 0xbd8668, roughness: 0.44, metalness: 0.08 });
+  const woodLight = new THREE.MeshStandardMaterial({ color: 0xbd8668, roughness: 0.42, metalness: 0.06 });
+  const woodDark = new THREE.MeshStandardMaterial({ color: 0xbd8668, roughness: 0.5, metalness: 0.06 });
   const brass = new THREE.MeshStandardMaterial({ color: 0xb58b4c, roughness: 0.27, metalness: 0.78 });
   const brassLight = new THREE.MeshStandardMaterial({ color: 0xd7b46d, roughness: 0.24, metalness: 0.76 });
-  const brassShadow = new THREE.MeshStandardMaterial({ color: 0x79572e, roughness: 0.36, metalness: 0.68 });
+  const brassShadow = new THREE.MeshStandardMaterial({ color: 0xbd8668, roughness: 0.36, metalness: 0.68 });
   const recordMaterial = new THREE.MeshStandardMaterial({ color: 0x262320, roughness: 0.33, metalness: 0.3 });
   const labelMaterial = new THREE.MeshStandardMaterial({ color: 0xc08b55, roughness: 0.48, metalness: 0.12 });
   const blackMetal = new THREE.MeshStandardMaterial({ color: 0x292521, roughness: 0.35, metalness: 0.55 });

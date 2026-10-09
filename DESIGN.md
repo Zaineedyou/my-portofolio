@@ -12,7 +12,7 @@ Developer portfolio for readers who want to inspect Zaineedyou's software, tools
 
 ## Visual decisions
 
-Claudia Marker handles headlines; Claudia Tag is used for labels and longer authored project, About, and field-note copy. Both font files are self-hosted in `public/fonts/`. Warm paper, black ink, Claudia tan `#c48a62`, print dots, and the reference's quiet hero swoosh carry the visual identity.
+Claudia Marker handles headlines; Claudia Tag is used for labels and longer authored project, About, and field-note copy. Both font files are self-hosted in `public/fonts/`. White paper (`#ffffff`), black ink, and the exact sampled image accent (`#bd8668`, RGB 189, 134, 104) carry the visual identity alongside the print dots and the reference's quiet hero swoosh.
 
 Cards use a 28px radius and the portfolio's hard offset shadow. The Working Principle quote is a full-width landscape card with its label set beside the quote. Below it, notes `01` and `02` stack in the left column while the political criticism is the dark note `03` in the right column, without an extra eyebrow; mobile stacks them in source order.
 
@@ -26,4 +26,4 @@ Project, technology, contact, summary, and field-note data remain in `src/data/r
 
 ## For Mom
 
-The `#for-mom` route adds a quiet page using the same paper, Claudia fonts, tan, rounded corners, and visible offset shadows. The music card features a highly detailed textured 3D vintage gramophone with a brass horn, walnut cabinet, shellac record, and mechanical tonearm, loaded as a GLB and rendered in Three.js. Its product camera is fixed: there is no drag-to-rotate or turntable movement feature. The separate audio controls support play, pause, and seeking. The provided poem is rendered as supplied in one rounded card. The user-supplied Opus audio segment from 0:07 to 4:22 has a 2-second fade-in and is served from `public/audio/Number One For Me-Maher Zain.ogg` so Vercel returns an audio MIME type.
+The `#for-mom` route adds a quiet page using the same paper, Claudia fonts, sampled image accent, rounded corners, and visible offset shadows. The music card features a highly detailed textured 3D vintage gramophone with a brass horn, walnut cabinet, shellac record, and mechanical tonearm, loaded as a GLB and rendered in Three.js. Its product camera is fixed: there is no drag-to-rotate or turntable movement feature. The separate audio controls support play, pause, and seeking. The provided poem is rendered as supplied in one rounded card. The user-supplied Opus audio segment from 0:07 to 4:22 has a 2-second fade-in and is served from `public/audio/Number One For Me-Maher Zain.ogg` so Vercel returns an audio MIME type.
