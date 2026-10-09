@@ -94,7 +94,7 @@ function makeGramophone() {
   const brassLight = new THREE.MeshStandardMaterial({ color: 0xd7b46d, roughness: 0.24, metalness: 0.76 });
   const brassShadow = new THREE.MeshStandardMaterial({ color: 0xbd8668, roughness: 0.36, metalness: 0.68 });
   const recordMaterial = new THREE.MeshStandardMaterial({ color: 0x262320, roughness: 0.33, metalness: 0.3 });
-  const labelMaterial = new THREE.MeshStandardMaterial({ color: 0xc08b55, roughness: 0.48, metalness: 0.12 });
+  const labelMaterial = new THREE.MeshStandardMaterial({ color: 0xbd8668, roughness: 0.48, metalness: 0.12 });
   const blackMetal = new THREE.MeshStandardMaterial({ color: 0x292521, roughness: 0.35, metalness: 0.55 });
 
   // Walnut cabinet, stepped plinth, and narrow brass trim.
@@ -131,7 +131,7 @@ function makeGramophone() {
   root.add(record);
   addCylinder(record, 0.65, 0.65, 0.075, [0, 0, 0], brassShadow, 64);
   addCylinder(record, 0.57, 0.57, 0.045, [0, 0.057, 0], recordMaterial, 64);
-  const grooveMaterial = new THREE.MeshStandardMaterial({ color: 0x47413a, roughness: 0.42, metalness: 0.24 });
+  const grooveMaterial = new THREE.MeshStandardMaterial({ color: 0x474747, roughness: 0.42, metalness: 0.24 });
   for (const radius of [0.34, 0.39, 0.44, 0.49]) {
     const groove = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.004, 4, 72), grooveMaterial);
     groove.rotation.x = Math.PI / 2;
@@ -245,7 +245,7 @@ export default function Gramophone3D({ isPlaying }: Gramophone3DProps) {
     renderer.domElement.style.pointerEvents = "none";
     mount.appendChild(renderer.domElement);
 
-    scene.add(new THREE.HemisphereLight(0xffefd8, 0x352419, 1.7));
+    scene.add(new THREE.HemisphereLight(0xffefd8, 0x333333, 1.7));
     const keyLight = new THREE.DirectionalLight(0xffe2bd, 4.4);
     keyLight.position.set(-4.5, 8, 6);
     keyLight.castShadow = true;
