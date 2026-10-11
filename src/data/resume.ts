@@ -112,6 +112,18 @@ export const DATA = {
       video: "",
     },
     {
+      title: "CaineASM Lite",
+      href: "https://github.com/Zaineedyou/CaineASM-Lite",
+      dates: "2026",
+      active: true,
+      description:
+        "A Discord AI bot in x86-64 NASM with a hand-written RFC 6455 WebSocket client, Groq chat and image analysis, per-user per-channel conversation history, and server-level settings.",
+      technologies: ["x86-64 Assembly", "Discord", "WebSocket", "Groq AI"],
+      links: [{ type: "Source", href: "https://github.com/Zaineedyou/CaineASM-Lite" }],
+      image: "",
+      video: "",
+    },
+    {
       title: "Valtique",
       href: "https://github.com/Zaineedyou/Valtique",
       dates: "2026",
