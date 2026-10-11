@@ -10,13 +10,13 @@ const HIDDEN_PROJECT_PREVIEWS = new Set(["CaineGO", "ClaudiaRPC-Rust"]);
 
 const revealEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-function scrollRevealProps(reduceMotion: boolean | null, delay = 0) {
+function scrollRevealProps(reduceMotion: boolean | null, delay = 0, distance = 44, startScale = 0.98) {
   if (reduceMotion) return {};
   return {
-    initial: { opacity: 0, y: 18 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.18 },
-    transition: { duration: 0.5, delay, ease: revealEase },
+    initial: { opacity: 0, y: distance, scale: startScale },
+    whileInView: { opacity: 1, y: 0, scale: 1 },
+    viewport: { once: true, amount: 0.15 },
+    transition: { duration: 0.8, delay, ease: revealEase },
   };
 }
 
@@ -26,7 +26,7 @@ function ProjectEntry({ project, ordinal, reduceMotion }: { project: Project; or
   return (
     <motion.article
       className={`project-entry${ordinal === 0 ? " project-entry--lead" : ""}${hasImage ? " project-entry--image" : ""}`}
-      {...scrollRevealProps(reduceMotion, Math.min(ordinal * 0.045, 0.24))}
+      {...scrollRevealProps(reduceMotion, Math.min(ordinal * 0.07, 0.35), 72, 0.95)}
     >
       <div className="project-number" aria-label={`Project ${String(ordinal + 1).padStart(2, "0")}`}>
         {String(ordinal + 1).padStart(2, "0")}
