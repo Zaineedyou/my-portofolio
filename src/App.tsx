@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { DATA, type Project } from "./data/resume";
 import { FIELD_NOTES } from "./data/fieldNotes";
 import ForMomPage from "./components/ForMomPage";
@@ -7,11 +8,26 @@ import "./index.css";
 const ALL = "All";
 const HIDDEN_PROJECT_PREVIEWS = new Set(["CaineGO", "ClaudiaRPC-Rust"]);
 
-function ProjectEntry({ project, ordinal }: { project: Project; ordinal: number }) {
+const revealEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+function scrollRevealProps(reduceMotion: boolean | null, delay = 0) {
+  if (reduceMotion) return {};
+  return {
+    initial: { opacity: 0, y: 18 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.18 },
+    transition: { duration: 0.5, delay, ease: revealEase },
+  };
+}
+
+function ProjectEntry({ project, ordinal, reduceMotion }: { project: Project; ordinal: number; reduceMotion: boolean | null }) {
   const hasImage = Boolean(project.image) && !HIDDEN_PROJECT_PREVIEWS.has(project.title);
 
   return (
-    <article className={`project-entry${ordinal === 0 ? " project-entry--lead" : ""}${hasImage ? " project-entry--image" : ""}`}>
+    <motion.article
+      className={`project-entry${ordinal === 0 ? " project-entry--lead" : ""}${hasImage ? " project-entry--image" : ""}`}
+      {...scrollRevealProps(reduceMotion, Math.min(ordinal * 0.045, 0.24))}
+    >
       <div className="project-number" aria-label={`Project ${String(ordinal + 1).padStart(2, "0")}`}>
         {String(ordinal + 1).padStart(2, "0")}
       </div>
@@ -37,11 +53,12 @@ function ProjectEntry({ project, ordinal }: { project: Project; ordinal: number 
           <img src={project.image} alt={`${project.title} project preview`} loading="lazy" />
         </figure>
       )}
-    </article>
+    </motion.article>
   );
 }
 
 function App() {
+  const reduceMotion = useReducedMotion();
   const [showForMom, setShowForMom] = useState(() => window.location.hash === "#for-mom");
   const [isLoading, setIsLoading] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
@@ -207,7 +224,7 @@ function App() {
           </div>
         </section>
 
-        <section className="about-section section-block" id="about" aria-labelledby="about-title">
+        <motion.section className="about-section section-block" id="about" aria-labelledby="about-title" {...scrollRevealProps(reduceMotion)}>
           <div className="section-title">
             <p className="eyebrow">The person behind the commits</p>
             <h2 id="about-title">About</h2>
@@ -223,14 +240,14 @@ function App() {
               {DATA.skills.map((skill) => <li key={skill.name}>{skill.name}</li>)}
             </ul>
           </div>
-        </section>
+        </motion.section>
 
         <section className="work-section section-block" id="work" aria-labelledby="work-title">
-          <div className="section-title section-title--work">
+          <motion.div className="section-title section-title--work" {...scrollRevealProps(reduceMotion)}>
             <p className="eyebrow">Things I built, broke, and kept</p>
             <h2 id="work-title">Selected work<br /><span>and the whole archive.</span></h2>
-          </div>
-          <div className="archive-controls">
+          </motion.div>
+          <motion.div className="archive-controls" {...scrollRevealProps(reduceMotion, 0.06)}>
             <div className="filter-list" role="group" aria-label="Project technology filters">
               {categories.map((category) => (
                 <button
@@ -244,36 +261,36 @@ function App() {
                 </button>
               ))}
             </div>
-          </div>
+          </motion.div>
           <div className="project-list">
             {filteredProjects.map((project) => (
-              <ProjectEntry project={project} ordinal={DATA.projects.indexOf(project)} key={project.title} />
+              <ProjectEntry project={project} ordinal={DATA.projects.indexOf(project)} reduceMotion={reduceMotion} key={project.title} />
             ))}
           </div>
         </section>
 
         <section className="notes-section section-block" id="notes" aria-labelledby="notes-title">
-          <div className="section-title">
+          <motion.div className="section-title" {...scrollRevealProps(reduceMotion)}>
             <h2 id="notes-title">Field notes</h2>
-          </div>
-          <blockquote className="working-principle">
+          </motion.div>
+          <motion.blockquote className="working-principle" {...scrollRevealProps(reduceMotion, 0.06)}>
             <p>“{FIELD_NOTES.quote}”</p>
             <cite>Working principle</cite>
-          </blockquote>
+          </motion.blockquote>
           <div className="field-notes-layout">
             <div className="technical-notes">
               {otherNotes.map((point, index) => (
-                <article className="technical-note" key={point.title}>
+                <motion.article className="technical-note" key={point.title} {...scrollRevealProps(reduceMotion, index * 0.06)}>
                   <span className="note-index">{String(index + 1).padStart(2, "0")}</span>
                   <div>
                     <h3>{point.title}</h3>
                     <p>{point.description}</p>
                   </div>
-                </article>
+                </motion.article>
               ))}
             </div>
             {politicalNote && (
-              <article className="political-note" aria-labelledby="political-note-title">
+              <motion.article className="political-note" aria-labelledby="political-note-title" {...scrollRevealProps(reduceMotion, 0.1)}>
                 <span className="political-note-index">
                   {String(FIELD_NOTES.points.indexOf(politicalNote) + 1).padStart(2, "0")}
                 </span>
@@ -281,16 +298,16 @@ function App() {
                   <h3 id="political-note-title">{politicalNote.title}</h3>
                   <p>{politicalNote.description}</p>
                 </div>
-              </article>
+              </motion.article>
             )}
           </div>
         </section>
 
-        <section className="closing-section" aria-label="Closing note">
+        <motion.section className="closing-section" aria-label="Closing note" {...scrollRevealProps(reduceMotion)}>
           <p className="eyebrow">Still building / still paying attention</p>
           <h2>Keep digging.<br /><span>There is more in here.</span></h2>
           <a className="button button-inverse" href={DATA.contact.social.GitHub.url} target="_blank" rel="noreferrer">Find me on GitHub</a>
-        </section>
+        </motion.section>
       </main>
 
       <footer className="site-footer page-wrap">

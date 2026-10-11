@@ -20,6 +20,8 @@ The initial loading screen follows Claudia Ó Loki's boot card, swoosh, outlined
 
 CaineGO and ClaudiaRPC-Rust project entries and links remain, but their two project images are not shown. Category filters, keyboard feedback, restrained hero motion, reduced-motion support, and mobile reflow remain.
 
+The About section, work heading, project entries, field notes, and closing section reveal once as they enter view using a short opacity and vertical transition. Reduced-motion users see the content immediately without movement. Every project title uses the same type scale, including the lead card.
+
 ## Content constraints
 
 Project, technology, contact, summary, and field-note data remain in `src/data/resume.ts` and `src/data/fieldNotes.ts`. The visual layer must not invent project claims, statistics, testimonials, links, or replacement political copy.
