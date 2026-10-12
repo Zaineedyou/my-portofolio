@@ -61,6 +61,42 @@ export const DATA = {
 
   projects: [
     {
+      title: "CaineASM-Library",
+      href: "https://github.com/Zaineedyou/CaineASM-Library",
+      dates: "2026",
+      active: true,
+      description:
+        "A reusable Discord bot library written in x86-64 NASM for C and assembly applications, with a manually implemented Gateway v10 WebSocket client, heartbeat and automatic resume/reconnect, REST helpers, message and event callbacks, and mock-backed end-to-end tests.",
+      technologies: ["x86-64 Assembly", "C", "Discord", "NASM"],
+      links: [{ type: "Source", href: "https://github.com/Zaineedyou/CaineASM-Library" }],
+      image: "",
+      video: "",
+    },
+    {
+      title: "CaineASM Lite",
+      href: "https://github.com/Zaineedyou/CaineASM-Lite",
+      dates: "2026",
+      active: true,
+      description:
+        "A Discord AI bot in x86-64 NASM with a hand-written RFC 6455 WebSocket client, Groq chat and image analysis, per-user per-channel conversation history, and server-level settings.",
+      technologies: ["x86-64 Assembly", "Discord", "WebSocket", "Groq AI"],
+      links: [{ type: "Source", href: "https://github.com/Zaineedyou/CaineASM-Lite" }],
+      image: "",
+      video: "",
+    },
+    {
+      title: "CaineASM",
+      href: "https://github.com/Zaineedyou/CaineASM",
+      dates: "2026",
+      active: true,
+      description:
+        "A low-level Discord bot built primarily in x86-64 assembly, with C adapters for secure transport, Discord Gateway and REST integration, Groq AI, moderation, attachments, vision payloads, persistence, and vector-tested subsystems.",
+      technologies: ["x86-64 Assembly", "C", "Discord", "Groq AI"],
+      links: [{ type: "Source", href: "https://github.com/Zaineedyou/CaineASM" }],
+      image: "",
+      video: "",
+    },
+    {
       title: "Claudia Ó Loki",
       href: "https://panelbot.zaineedyou.my.id",
       dates: "2026",
@@ -97,30 +133,6 @@ export const DATA = {
       technologies: ["Rust", "Discord RPC", "WebUI"],
       links: [{ type: "Source", href: "https://github.com/Zaineedyou/ClaudiaRPC-Rust" }],
       image: "/RpcRust.png",
-      video: "",
-    },
-    {
-      title: "CaineASM",
-      href: "https://github.com/Zaineedyou/CaineASM",
-      dates: "2026",
-      active: true,
-      description:
-        "A low-level Discord bot built primarily in x86-64 assembly, with C adapters for secure transport, Discord Gateway and REST integration, Groq AI, moderation, attachments, vision payloads, persistence, and vector-tested subsystems.",
-      technologies: ["x86-64 Assembly", "C", "Discord", "Groq AI"],
-      links: [{ type: "Source", href: "https://github.com/Zaineedyou/CaineASM" }],
-      image: "",
-      video: "",
-    },
-    {
-      title: "CaineASM Lite",
-      href: "https://github.com/Zaineedyou/CaineASM-Lite",
-      dates: "2026",
-      active: true,
-      description:
-        "A Discord AI bot in x86-64 NASM with a hand-written RFC 6455 WebSocket client, Groq chat and image analysis, per-user per-channel conversation history, and server-level settings.",
-      technologies: ["x86-64 Assembly", "Discord", "WebSocket", "Groq AI"],
-      links: [{ type: "Source", href: "https://github.com/Zaineedyou/CaineASM-Lite" }],
-      image: "",
       video: "",
     },
     {
