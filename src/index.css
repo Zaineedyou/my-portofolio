@@ -313,6 +313,21 @@ button { color: inherit; }
 .technology-list { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 14px 0 0; padding: 0; list-style: none; }
 .technology-list li { font-family: var(--tag); font-size: 15px; text-transform: uppercase; }
 .technology-list li + li::before { content: "/"; margin-right: 12px; color: var(--muted); }
+.language-meter { max-width: 560px; margin-top: 20px; padding-top: 13px; border-top: 1px solid rgba(10, 10, 10, .2); }
+.language-meter-heading { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); font-family: var(--tag); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+.language-meter-track { display: flex; height: 10px; overflow: hidden; margin-top: 8px; border: 1px solid var(--ink); border-radius: 999px; background: #f1f1f1; }
+.language-meter-segment { min-width: 2px; background: var(--accent); }
+.language-meter-segment[data-language-index="1"] { background: var(--ink); }
+.language-meter-segment[data-language-index="2"] { background: #d8b5a1; }
+.language-meter-segment[data-language-index="3"] { background: #777; }
+.language-meter-list { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 9px 0 0; padding: 0; list-style: none; }
+.language-meter-list li { display: inline-flex; align-items: center; gap: 5px; font-family: var(--tag); font-size: 14px; }
+.language-meter-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--accent); }
+.language-meter-dot[data-language-index="1"] { background: var(--ink); }
+.language-meter-dot[data-language-index="2"] { background: #d8b5a1; }
+.language-meter-dot[data-language-index="3"] { background: #777; }
+.language-meter-percent { color: var(--muted); font-variant-numeric: tabular-nums; }
+.language-meter-state { margin-top: 17px; color: var(--muted); font-family: var(--tag); font-size: 14px; }
 .project-links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 16px; }
 .project-links a { display: inline-flex; min-height: 44px; align-items: center; font-family: var(--tag); font-size: 16px; text-decoration-thickness: 2px; text-underline-offset: 4px; text-transform: uppercase; }
 .project-links a:hover { text-decoration: none; background: var(--accent); }

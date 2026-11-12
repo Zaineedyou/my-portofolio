@@ -3,12 +3,19 @@ import { motion, useReducedMotion } from "framer-motion";
 import { DATA, type Project } from "./data/resume";
 import { FIELD_NOTES } from "./data/fieldNotes";
 import ForMomPage from "./components/ForMomPage";
+import LanguageMeter from "./components/LanguageMeter";
+import { fetchGitHubLanguages, type GitHubLanguage } from "./lib/github";
 import "./index.css";
 
 const ALL = "All";
 const HIDDEN_PROJECT_PREVIEWS = new Set(["CaineGO", "ClaudiaRPC-Rust"]);
 
 const revealEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+type LanguageState = {
+  status: "loading" | "ready" | "error";
+  languages?: GitHubLanguage[];
+};
 
 function scrollRevealProps(reduceMotion: boolean | null, delay = 0, distance = 44, startScale = 0.98) {
   if (reduceMotion) return {};
@@ -20,7 +27,7 @@ function scrollRevealProps(reduceMotion: boolean | null, delay = 0, distance = 4
   };
 }
 
-function ProjectEntry({ project, ordinal, reduceMotion }: { project: Project; ordinal: number; reduceMotion: boolean | null }) {
+function ProjectEntry({ project, ordinal, reduceMotion, languageState }: { project: Project; ordinal: number; reduceMotion: boolean | null; languageState?: LanguageState }) {
   const hasImage = Boolean(project.image) && !HIDDEN_PROJECT_PREVIEWS.has(project.title);
 
   return (
@@ -40,6 +47,7 @@ function ProjectEntry({ project, ordinal, reduceMotion }: { project: Project; or
         <ul className="technology-list" aria-label={`Technologies used for ${project.title}`}>
           {project.technologies.map((technology) => <li key={technology}>{technology}</li>)}
         </ul>
+        <LanguageMeter status={languageState?.status ?? "loading"} languages={languageState?.languages} />
         <div className="project-links" aria-label={`${project.title} links`}>
           {project.links.map((link) => (
             <a href={link.href} target="_blank" rel="noreferrer" key={`${link.type}-${link.href}`}>
@@ -155,6 +163,7 @@ function App() {
   }, [showForMom]);
 
   const [activeCategory, setActiveCategory] = useState(ALL);
+  const [languageStates, setLanguageStates] = useState<Record<string, LanguageState>>({});
   const categories = useMemo(
     () => [ALL, ...Array.from(new Set(DATA.projects.map((project) => project.technologies[0])))],
     [],
@@ -162,6 +171,37 @@ function App() {
   const filteredProjects = activeCategory === ALL
     ? DATA.projects
     : DATA.projects.filter((project) => project.technologies[0] === activeCategory);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let disposed = false;
+
+    const loadLanguages = async () => {
+      await Promise.all(DATA.projects.map(async (project) => {
+        const repositoryUrl = project.links.find((link) => link.href.startsWith("https://github.com/"))?.href;
+        if (!repositoryUrl) {
+          if (!disposed) setLanguageStates((current) => ({ ...current, [project.title]: { status: "error" } }));
+          return;
+        }
+
+        try {
+          const languages = await fetchGitHubLanguages(repositoryUrl, controller.signal);
+          if (!disposed) setLanguageStates((current) => ({ ...current, [project.title]: { status: "ready", languages } }));
+        } catch {
+          if (!disposed && !controller.signal.aborted) {
+            setLanguageStates((current) => ({ ...current, [project.title]: { status: "error" } }));
+          }
+        }
+      }));
+    };
+
+    void loadLanguages();
+    return () => {
+      disposed = true;
+      controller.abort();
+    };
+  }, []);
+
   const politicalNote = FIELD_NOTES.points.find((point) => point.title === "Fuck You, Human Rights Violator");
   const otherNotes = FIELD_NOTES.points.filter((point) => point !== politicalNote);
 
@@ -264,7 +304,7 @@ function App() {
           </motion.div>
           <div className="project-list">
             {filteredProjects.map((project) => (
-              <ProjectEntry project={project} ordinal={DATA.projects.indexOf(project)} reduceMotion={reduceMotion} key={project.title} />
+              <ProjectEntry project={project} ordinal={DATA.projects.indexOf(project)} reduceMotion={reduceMotion} languageState={languageStates[project.title]} key={project.title} />
             ))}
           </div>
         </section>
