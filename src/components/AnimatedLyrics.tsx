@@ -1,24 +1,11 @@
-import { memo, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { NUMBER_ONE_LYRICS } from "../data/numberOneForMe";
 
 type AnimatedLyricsProps = {
   audioRef: RefObject<HTMLAudioElement>;
-  analyserRef: RefObject<AnalyserNode | null>;
   duration: number;
   isPlaying: boolean;
 };
-
-const PARTICLES = Array.from({ length: 14 }, (_, index) => {
-  const style = {
-    "--particle-x": `${((index * 43) % 91) + 4}%`,
-    "--particle-y": `${((index * 61) % 83) + 8}%`,
-    "--particle-size": `${1 + (index % 3) * 0.55}px`,
-    "--particle-duration": `${8 + (index % 7) * 1.4}s`,
-    "--particle-delay": `${-((index * 7) % 19)}s`,
-    "--particle-drift": `${((index * 23) % 40) - 20}px`,
-  } as CSSProperties;
-  return { index, style };
-});
 
 function cueAt(time: number): number {
   let low = 0;
@@ -51,28 +38,57 @@ function wordAt(lineIndex: number, time: number): number {
   return -1;
 }
 
-function setWordClass(node: HTMLSpanElement | null, className: string) {
+function setWordClass(node: HTMLSpanElement | null, state: "active" | "past" | "future") {
   if (!node) return;
   node.classList.remove("mom-lyric-word--active", "mom-lyric-word--past", "mom-lyric-word--future");
-  node.classList.add(`mom-lyric-word--${className}`);
+  node.classList.add(`mom-lyric-word--${state}`);
 }
 
-function AnimatedLyrics({ audioRef, analyserRef, duration, isPlaying }: AnimatedLyricsProps) {
-  const visualizerRef = useRef<HTMLCanvasElement>(null);
-  const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null);
-  const canvasSizeRef = useRef({ width: 0, height: 0 });
-  const spectrumRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
-  const haloRef = useRef<HTMLDivElement>(null);
+function AnimatedLyrics({ audioRef, duration, isPlaying }: AnimatedLyricsProps) {
+  const centerRef = useRef<HTMLDivElement>(null);
+  const previousFarRef = useRef<HTMLParagraphElement>(null);
+  const previousNearRef = useRef<HTMLParagraphElement>(null);
+  const currentRef = useRef<HTMLParagraphElement>(null);
+  const nextNearRef = useRef<HTMLParagraphElement>(null);
+  const nextFarRef = useRef<HTMLParagraphElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const wordNodesRef = useRef<Array<HTMLSpanElement | null>>([]);
+  const nextDistanceRef = useRef(72);
   const activeIndexRef = useRef(-1);
   const renderedIndexRef = useRef(-1);
   const activeWordIndexRef = useRef(-1);
   const [activeIndex, setActiveIndex] = useState(() => cueAt(audioRef.current?.currentTime ?? 0));
 
+  const activeLine = activeIndex >= 0 ? NUMBER_ONE_LYRICS[activeIndex] : undefined;
+  const previousNear = activeIndex > 0 ? NUMBER_ONE_LYRICS[activeIndex - 1] : undefined;
+  const previousFar = activeIndex > 1 ? NUMBER_ONE_LYRICS[activeIndex - 2] : undefined;
+  const nextNear = NUMBER_ONE_LYRICS[activeIndex + 1];
+  const nextFar = NUMBER_ONE_LYRICS[activeIndex + 2];
+
   useLayoutEffect(() => {
     renderedIndexRef.current = activeIndex;
     activeWordIndexRef.current = -1;
+    const center = centerRef.current;
+    const current = currentRef.current;
+    if (center && current) {
+      const currentHeight = current.offsetHeight;
+      const gap = Math.max(9, Math.min(18, center.clientHeight * 0.055));
+      const previousNearHeight = previousNearRef.current?.offsetHeight ?? 0;
+      const previousFarHeight = previousFarRef.current?.offsetHeight ?? 0;
+      const nextNearHeight = nextNearRef.current?.offsetHeight ?? 0;
+      const nextFarHeight = nextFarRef.current?.offsetHeight ?? 0;
+      const previousNearDistance = currentHeight / 2 + gap + previousNearHeight / 2;
+      const nextNearDistance = currentHeight / 2 + gap + nextNearHeight / 2;
+      const previousFarDistance = previousNearDistance + previousNearHeight / 2 + gap + previousFarHeight / 2;
+      const nextFarDistance = nextNearDistance + nextNearHeight / 2 + gap + nextFarHeight / 2;
+      center.style.setProperty("--previous-near-distance", `${previousNearDistance}px`);
+      center.style.setProperty("--previous-far-distance", `${previousFarDistance}px`);
+      center.style.setProperty("--next-near-distance", `${nextNearDistance}px`);
+      center.style.setProperty("--next-far-distance", `${nextFarDistance}px`);
+      center.style.setProperty("--lyrics-shift", "0px");
+      nextDistanceRef.current = nextNearDistance;
+    }
+
     const time = audioRef.current?.currentTime ?? 0;
     const line = NUMBER_ONE_LYRICS[activeIndex];
     if (!line) return;
@@ -82,107 +98,47 @@ function AnimatedLyrics({ audioRef, analyserRef, duration, isPlaying }: Animated
       setWordClass(wordNodesRef.current[index] ?? null, state);
     });
     activeWordIndexRef.current = currentWordIndex;
-  }, [activeIndex, audioRef]);
-
-  useEffect(() => {
-    const canvas = visualizerRef.current;
-    const context = canvas?.getContext("2d", { alpha: true });
-    if (!canvas || !context) return undefined;
-    context.lineCap = "round";
-    canvasContextRef.current = context;
-
-    const resize = () => {
-      const bounds = canvas.getBoundingClientRect();
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-      canvasSizeRef.current = { width: bounds.width, height: bounds.height };
-      canvas.width = Math.max(1, Math.round(bounds.width * pixelRatio));
-      canvas.height = Math.max(1, Math.round(bounds.height * pixelRatio));
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    };
-
-    resize();
-    if (typeof ResizeObserver !== "undefined") {
-      const observer = new ResizeObserver(resize);
-      observer.observe(canvas);
-      return () => {
-        observer.disconnect();
-        canvasContextRef.current = null;
-      };
-    }
-    window.addEventListener("resize", resize);
-    return () => {
-      window.removeEventListener("resize", resize);
-      canvasContextRef.current = null;
-    };
-  }, []);
+  }, [activeIndex, audioRef, previousNear, previousFar, nextNear, nextFar]);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return undefined;
     let animationFrame = 0;
 
-    const drawAudioRing = (time: number): number => {
-      const context = canvasContextRef.current;
-      const { width, height } = canvasSizeRef.current;
-      const analyser = analyserRef.current;
-      if (!context || width <= 0 || height <= 0) return 0;
-
-      let spectrum = spectrumRef.current;
-      if (analyser && (!spectrum || spectrum.length !== analyser.frequencyBinCount)) {
-        spectrum = new Uint8Array(analyser.frequencyBinCount);
-        spectrumRef.current = spectrum;
+    const updateConveyor = (time: number, lineIndex: number) => {
+      const center = centerRef.current;
+      if (!center) return;
+      const upcoming = NUMBER_ONE_LYRICS[lineIndex + 1];
+      if (!upcoming) {
+        center.style.setProperty("--lyrics-shift", "0px");
+        center.style.setProperty("--lyrics-current-scale", "1.12");
+        center.style.setProperty("--lyrics-current-opacity", "1");
+        center.style.setProperty("--lyrics-current-blur", "0px");
+        center.style.setProperty("--lyrics-previous-scale", "0.91");
+        center.style.setProperty("--lyrics-previous-opacity", "0.42");
+        center.style.setProperty("--lyrics-previous-blur", "3.6px");
+        center.style.setProperty("--lyrics-next-scale", "0.89");
+        center.style.setProperty("--lyrics-next-opacity", "0.26");
+        center.style.setProperty("--lyrics-next-blur", "4.5px");
+        center.style.setProperty("--lyrics-far-opacity", "0.16");
+        return;
       }
-      if (analyser && spectrum) analyser.getByteFrequencyData(spectrum);
-
-      let signal = 0;
-      if (spectrum?.length) {
-        const limit = Math.min(18, spectrum.length);
-        for (let index = 1; index < limit; index += 1) signal += spectrum[index] / 255;
-        signal /= Math.max(1, limit - 1);
-      } else {
-        signal = 0.08 + (Math.sin(time * 7.6) + 1) * 0.035;
-      }
-
-      context.clearRect(0, 0, width, height);
-      context.save();
-      context.globalCompositeOperation = "lighter";
-      const centerX = width / 2;
-      const centerY = height * 0.55;
-      const radius = Math.min(width * 0.45, height * 0.47);
-      const innerRadius = radius * 0.70;
-      const barCount = 72;
-
-      for (let index = 0; index < barCount; index += 1) {
-        const binIndex = spectrum?.length
-          ? Math.min(spectrum.length - 1, 1 + Math.floor((index / barCount) * spectrum.length * 0.48))
-          : -1;
-        const raw = binIndex >= 0 && spectrum ? spectrum[binIndex] / 255 : signal * (0.45 + 0.55 * Math.sin(time * 3 + index * 0.42));
-        const strength = Math.pow(Math.max(0, raw), 0.78);
-        const angle = (index / barCount) * Math.PI * 2 - Math.PI / 2 + time * 0.018;
-        const length = 3 + strength * (17 + signal * 32);
-        const x1 = centerX + Math.cos(angle) * innerRadius;
-        const y1 = centerY + Math.sin(angle) * innerRadius;
-        const x2 = centerX + Math.cos(angle) * (innerRadius + length);
-        const y2 = centerY + Math.sin(angle) * (innerRadius + length);
-        context.beginPath();
-        context.moveTo(x1, y1);
-        context.lineTo(x2, y2);
-        context.lineWidth = 0.8 + strength * 1.5;
-        context.strokeStyle = `rgba(248, 204, 168, ${0.12 + strength * 0.72})`;
-        context.stroke();
-      }
-
-      for (let index = 0; index < 18; index += 1) {
-        const angle = index * (Math.PI * 2 / 18) - time * (0.08 + signal * 0.12);
-        const orbit = radius * (0.91 + 0.035 * Math.sin(time * 1.8 + index));
-        const bin = spectrum?.length ? spectrum[(index * 3) % spectrum.length] / 255 : signal;
-        context.beginPath();
-        context.arc(centerX + Math.cos(angle) * orbit, centerY + Math.sin(angle) * orbit, 0.7 + bin * 2, 0, Math.PI * 2);
-        context.fillStyle = `rgba(255, 224, 195, ${0.18 + bin * 0.72})`;
-        context.fill();
-      }
-      context.restore();
-      return signal;
+      const currentStart = lineIndex >= 0 ? NUMBER_ONE_LYRICS[lineIndex].start : 0;
+      const distance = Math.max(0.12, upcoming.start - currentStart);
+      const transitionDuration = Math.min(0.62, distance);
+      const transitionStart = upcoming.start - transitionDuration;
+      const progress = Math.min(1, Math.max(0, (time - transitionStart) / transitionDuration));
+      center.style.setProperty("--lyrics-shift", `${(nextDistanceRef.current * progress).toFixed(2)}px`);
+      center.style.setProperty("--lyrics-current-scale", (1.12 - progress * 0.12).toFixed(3));
+      center.style.setProperty("--lyrics-current-opacity", (1 - progress * 0.45).toFixed(3));
+      center.style.setProperty("--lyrics-current-blur", `${(progress * 2.2).toFixed(2)}px`);
+      center.style.setProperty("--lyrics-previous-scale", (0.91 - progress * 0.04).toFixed(3));
+      center.style.setProperty("--lyrics-previous-opacity", (0.42 - progress * 0.14).toFixed(3));
+      center.style.setProperty("--lyrics-previous-blur", `${(3.6 + progress * 1.2).toFixed(2)}px`);
+      center.style.setProperty("--lyrics-next-scale", (0.89 + progress * 0.23).toFixed(3));
+      center.style.setProperty("--lyrics-next-opacity", (0.26 + progress * 0.74).toFixed(3));
+      center.style.setProperty("--lyrics-next-blur", `${(4.5 * (1 - progress)).toFixed(2)}px`);
+      center.style.setProperty("--lyrics-far-opacity", (0.16 + progress * 0.04).toFixed(3));
     };
 
     const updateFromAudio = (forceWordSync = false) => {
@@ -202,14 +158,12 @@ function AnimatedLyrics({ audioRef, analyserRef, duration, isPlaying }: Animated
             const state = time >= word.end ? "past" : time >= word.start ? "active" : "future";
             setWordClass(wordNodesRef.current[index] ?? null, state);
           });
+          activeWordIndexRef.current = currentWordIndex;
         } else if (currentWordIndex !== activeWordIndexRef.current) {
           const previousIndex = activeWordIndexRef.current;
           if (previousIndex >= 0) {
             const previousWord = line.words[previousIndex];
-            setWordClass(
-              wordNodesRef.current[previousIndex] ?? null,
-              time >= previousWord.end ? "past" : "future",
-            );
+            setWordClass(wordNodesRef.current[previousIndex] ?? null, time >= previousWord.end ? "past" : "future");
           }
           if (currentWordIndex >= 0) setWordClass(wordNodesRef.current[currentWordIndex] ?? null, "active");
           activeWordIndexRef.current = currentWordIndex;
@@ -221,19 +175,7 @@ function AnimatedLyrics({ audioRef, analyserRef, duration, isPlaying }: Animated
         ? Math.min(1, Math.max(0, time / safeDuration))
         : 0;
       if (progressRef.current) progressRef.current.style.transform = `scaleX(${trackProgress})`;
-
-      let wordPulse = 0;
-      if (line && currentWordIndex >= 0) {
-        const word = line.words[currentWordIndex];
-        const progress = (time - word.start) / Math.max(0.01, word.end - word.start);
-        wordPulse = 0.18 + Math.sin(Math.PI * progress) * 0.25;
-      }
-      const audioPulse = drawAudioRing(time);
-      const glow = Math.min(0.92, 0.16 + audioPulse * 1.25 + wordPulse);
-      if (haloRef.current) {
-        haloRef.current.style.opacity = glow.toFixed(3);
-        haloRef.current.style.transform = `translate3d(-50%, -50%, 0) scale(${(0.93 + glow * 0.24).toFixed(3)})`;
-      }
+      updateConveyor(time, nextCue);
     };
 
     const tick = () => {
@@ -270,11 +212,7 @@ function AnimatedLyrics({ audioRef, analyserRef, duration, isPlaying }: Animated
       audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("loadedmetadata", handleSeek);
     };
-  }, [audioRef, analyserRef, duration, isPlaying]);
-
-  const activeLine = activeIndex >= 0 ? NUMBER_ONE_LYRICS[activeIndex] : undefined;
-  const previousLine = activeIndex > 0 ? NUMBER_ONE_LYRICS[activeIndex - 1] : undefined;
-  const nextLine = activeIndex >= 0 ? NUMBER_ONE_LYRICS[activeIndex + 1] : NUMBER_ONE_LYRICS[0];
+  }, [audioRef, duration, isPlaying]);
 
   return (
     <div
@@ -283,32 +221,22 @@ function AnimatedLyrics({ audioRef, analyserRef, duration, isPlaying }: Animated
       data-playing={isPlaying}
       aria-label="Lirik Number One For Me yang tersinkron dengan lagu"
     >
-      <div ref={haloRef} className="mom-lyrics-halo" aria-hidden="true" />
-      <div className="mom-lyrics-orbit mom-lyrics-orbit--one" aria-hidden="true" />
-      <div className="mom-lyrics-orbit mom-lyrics-orbit--two" aria-hidden="true" />
-      <div className="mom-lyrics-orbit mom-lyrics-orbit--three" aria-hidden="true" />
-      <canvas ref={visualizerRef} className="mom-lyrics-visualizer" aria-hidden="true" />
-      <div className="mom-lyrics-light-sweep" aria-hidden="true" />
-      <div className="mom-lyrics-particles" aria-hidden="true">
-        {PARTICLES.map(({ index, style }) => <i className="mom-lyric-particle" key={index} style={style} />)}
-      </div>
-
       <div className="mom-lyrics-topline" aria-hidden="true">
         <span>FOR MOM / NUMBER ONE FOR ME</span>
-        <span className="mom-lyrics-meter">
-          {Array.from({ length: 5 }, (_, index) => <i key={index} />)}
-        </span>
       </div>
-
-      <div className="mom-lyrics-center">
-        {previousLine && (
-          <p key={`previous-${previousLine.start}`} className="mom-lyrics-neighbor mom-lyrics-neighbor--previous" aria-hidden="true">
-            {previousLine.text}
+      <div ref={centerRef} className="mom-lyrics-center">
+        {previousFar && (
+          <p key={`previous-far-${previousFar.start}`} ref={previousFarRef} className="mom-lyrics-line mom-lyrics-line--previous-far" aria-hidden="true">
+            {previousFar.text}
           </p>
         )}
-
+        {previousNear && (
+          <p key={`previous-near-${previousNear.start}`} ref={previousNearRef} className="mom-lyrics-line mom-lyrics-line--previous-near" aria-hidden="true">
+            {previousNear.text}
+          </p>
+        )}
         {activeLine ? (
-          <p key={activeIndex} className="mom-lyrics-current" aria-hidden="true">
+          <p key={`active-${activeIndex}`} ref={currentRef} className="mom-lyrics-line mom-lyrics-line--current" aria-hidden="true">
             {activeLine.words.map((word, index) => (
               <span
                 className="mom-lyric-word mom-lyric-word--future"
@@ -320,19 +248,20 @@ function AnimatedLyrics({ audioRef, analyserRef, duration, isPlaying }: Animated
             ))}
           </p>
         ) : (
-          <p className="mom-lyrics-intro" aria-hidden="true">A song, a memory, a love that stays.</p>
-        )}
-
-        {nextLine && (
-          <p key={`next-${nextLine.start}`} className="mom-lyrics-neighbor mom-lyrics-neighbor--next" aria-hidden="true">
-            {nextLine.text}
+          <p ref={currentRef} className="mom-lyrics-line mom-lyrics-line--current mom-lyrics-line--intro" aria-hidden="true">
+            A song, a memory, a love that stays.
           </p>
         )}
-      </div>
-
-      <div className="mom-lyrics-bottomline" aria-hidden="true">
-        <span>LISTEN CLOSE</span>
-        <span>LIVE LYRICS</span>
+        {nextNear && (
+          <p key={`next-near-${nextNear.start}`} ref={nextNearRef} className="mom-lyrics-line mom-lyrics-line--next-near" aria-hidden="true">
+            {nextNear.text}
+          </p>
+        )}
+        {nextFar && (
+          <p key={`next-far-${nextFar.start}`} ref={nextFarRef} className="mom-lyrics-line mom-lyrics-line--next-far" aria-hidden="true">
+            {nextFar.text}
+          </p>
+        )}
       </div>
       <div className="mom-lyrics-progress" aria-hidden="true">
         <span ref={progressRef} />
