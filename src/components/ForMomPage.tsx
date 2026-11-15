@@ -12,10 +12,41 @@ function formatTime(seconds: number): string {
 
 export default function ForMomPage() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playerError, setPlayerError] = useState("");
+
+  const prepareAudioAnalysis = async (audio: HTMLAudioElement) => {
+    if (typeof window.AudioContext === "undefined") return;
+    let context = audioContextRef.current;
+    if (!context) {
+      context = new window.AudioContext();
+      audioContextRef.current = context;
+    }
+    await context.resume();
+
+    if (!audioSourceRef.current) {
+      const source = context.createMediaElementSource(audio);
+      audioSourceRef.current = source;
+      const analyser = context.createAnalyser();
+      analyser.fftSize = 128;
+      analyser.smoothingTimeConstant = 0.86;
+      analyser.minDecibels = -78;
+      analyser.maxDecibels = -20;
+      analyserRef.current = analyser;
+      try {
+        source.connect(analyser);
+        analyser.connect(context.destination);
+      } catch {
+        source.connect(context.destination);
+        analyserRef.current = null;
+      }
+    }
+  };
 
   const togglePlayback = async () => {
     const audio = audioRef.current;
@@ -23,6 +54,11 @@ export default function ForMomPage() {
 
     if (audio.paused) {
       try {
+        try {
+          await prepareAudioAnalysis(audio);
+        } catch {
+          // Audio playback must still work if browser audio analysis is unavailable.
+        }
         await audio.play();
         setPlayerError("");
       } catch {
@@ -60,7 +96,7 @@ export default function ForMomPage() {
           </div>
 
           <section className="mom-player" aria-label="Music player">
-            <AnimatedLyrics audioRef={audioRef} duration={duration} isPlaying={isPlaying} />
+            <AnimatedLyrics audioRef={audioRef} analyserRef={analyserRef} duration={duration} isPlaying={isPlaying} />
 
             <div className="mom-player-info">
               <div className="mom-track-heading">
