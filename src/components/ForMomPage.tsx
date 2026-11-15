@@ -59,15 +59,11 @@ export default function ForMomPage() {
             <p className="mom-lead">A place for the love I carry, and the words I still want you to hear.</p>
           </div>
 
-          <section className="mom-player" aria-label="Music player">
+          <section className="mom-player" aria-label="Music player for Number One For Me by Maher Zain">
             <AnimatedLyrics audioRef={audioRef} duration={duration} isPlaying={isPlaying} />
 
             <div className="mom-player-info">
               <div className="mom-track-heading">
-                <div>
-                  <h2>Number One For Me</h2>
-                  <p className="mom-track-artist">Maher Zain</p>
-                </div>
                 <button
                   className="mom-play-button"
                   type="button"

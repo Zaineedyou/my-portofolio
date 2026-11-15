@@ -23,158 +23,95 @@ function cueAt(time: number): number {
   return result;
 }
 
-function wordAt(lineIndex: number, time: number): number {
-  const words = NUMBER_ONE_LYRICS[lineIndex]?.words;
-  if (!words?.length) return -1;
-  let low = 0;
-  let high = words.length - 1;
-  while (low <= high) {
-    const middle = (low + high) >> 1;
-    const word = words[middle];
-    if (time < word.start) high = middle - 1;
-    else if (time >= word.end) low = middle + 1;
-    else return middle;
-  }
-  return -1;
-}
-
-function setWordClass(node: HTMLSpanElement | null, state: "active" | "past" | "future") {
-  if (!node) return;
-  node.classList.remove("mom-lyric-word--active", "mom-lyric-word--past", "mom-lyric-word--future");
-  node.classList.add(`mom-lyric-word--${state}`);
+function smoothstep(value: number): number {
+  const progress = Math.max(0, Math.min(1, value));
+  return progress * progress * (3 - 2 * progress);
 }
 
 function AnimatedLyrics({ audioRef, duration, isPlaying }: AnimatedLyricsProps) {
-  const centerRef = useRef<HTMLDivElement>(null);
-  const previousFarRef = useRef<HTMLParagraphElement>(null);
-  const previousNearRef = useRef<HTMLParagraphElement>(null);
-  const currentRef = useRef<HTMLParagraphElement>(null);
-  const nextNearRef = useRef<HTMLParagraphElement>(null);
-  const nextFarRef = useRef<HTMLParagraphElement>(null);
-  const progressRef = useRef<HTMLSpanElement>(null);
-  const wordNodesRef = useRef<Array<HTMLSpanElement | null>>([]);
-  const nextDistanceRef = useRef(72);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const lineNodesRef = useRef<Array<HTMLParagraphElement | null>>([]);
+  const linePositionsRef = useRef<number[]>([]);
   const activeIndexRef = useRef(-1);
-  const renderedIndexRef = useRef(-1);
-  const activeWordIndexRef = useRef(-1);
   const [activeIndex, setActiveIndex] = useState(() => cueAt(audioRef.current?.currentTime ?? 0));
 
-  const activeLine = activeIndex >= 0 ? NUMBER_ONE_LYRICS[activeIndex] : undefined;
-  const previousNear = activeIndex > 0 ? NUMBER_ONE_LYRICS[activeIndex - 1] : undefined;
-  const previousFar = activeIndex > 1 ? NUMBER_ONE_LYRICS[activeIndex - 2] : undefined;
-  const nextNear = NUMBER_ONE_LYRICS[activeIndex + 1];
-  const nextFar = NUMBER_ONE_LYRICS[activeIndex + 2];
-
   useLayoutEffect(() => {
-    renderedIndexRef.current = activeIndex;
-    activeWordIndexRef.current = -1;
-    const center = centerRef.current;
-    const current = currentRef.current;
-    if (center && current) {
-      const currentHeight = current.offsetHeight;
-      const gap = Math.max(9, Math.min(18, center.clientHeight * 0.055));
-      const previousNearHeight = previousNearRef.current?.offsetHeight ?? 0;
-      const previousFarHeight = previousFarRef.current?.offsetHeight ?? 0;
-      const nextNearHeight = nextNearRef.current?.offsetHeight ?? 0;
-      const nextFarHeight = nextFarRef.current?.offsetHeight ?? 0;
-      const previousNearDistance = currentHeight / 2 + gap + previousNearHeight / 2;
-      const nextNearDistance = currentHeight / 2 + gap + nextNearHeight / 2;
-      const previousFarDistance = previousNearDistance + previousNearHeight / 2 + gap + previousFarHeight / 2;
-      const nextFarDistance = nextNearDistance + nextNearHeight / 2 + gap + nextFarHeight / 2;
-      center.style.setProperty("--previous-near-distance", `${previousNearDistance}px`);
-      center.style.setProperty("--previous-far-distance", `${previousFarDistance}px`);
-      center.style.setProperty("--next-near-distance", `${nextNearDistance}px`);
-      center.style.setProperty("--next-far-distance", `${nextFarDistance}px`);
-      center.style.setProperty("--lyrics-shift", "0px");
-      nextDistanceRef.current = nextNearDistance;
-    }
+    const measureLines = () => {
+      linePositionsRef.current = lineNodesRef.current.map((node) => node?.offsetTop ?? 0);
+    };
 
-    const time = audioRef.current?.currentTime ?? 0;
-    const line = NUMBER_ONE_LYRICS[activeIndex];
-    if (!line) return;
-    const currentWordIndex = wordAt(activeIndex, time);
-    line.words.forEach((word, index) => {
-      const state = time >= word.end ? "past" : time >= word.start ? "active" : "future";
-      setWordClass(wordNodesRef.current[index] ?? null, state);
-    });
-    activeWordIndexRef.current = currentWordIndex;
-  }, [activeIndex, audioRef, previousNear, previousFar, nextNear, nextFar]);
+    measureLines();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measureLines);
+    if (stageRef.current) observer?.observe(stageRef.current);
+    if (listRef.current) observer?.observe(listRef.current);
+    window.addEventListener("resize", measureLines);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measureLines);
+    };
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return undefined;
+    const list = listRef.current;
+    if (!audio || !list) return undefined;
+
     let animationFrame = 0;
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduceMotion = reducedMotionQuery.matches;
 
     const updateConveyor = (time: number, lineIndex: number) => {
-      const center = centerRef.current;
-      if (!center) return;
-      const upcoming = NUMBER_ONE_LYRICS[lineIndex + 1];
-      if (!upcoming) {
-        center.style.setProperty("--lyrics-shift", "0px");
-        center.style.setProperty("--lyrics-current-scale", "1.12");
-        center.style.setProperty("--lyrics-current-opacity", "1");
-        center.style.setProperty("--lyrics-current-blur", "0px");
-        center.style.setProperty("--lyrics-previous-scale", "0.91");
-        center.style.setProperty("--lyrics-previous-opacity", "0.42");
-        center.style.setProperty("--lyrics-previous-blur", "3.6px");
-        center.style.setProperty("--lyrics-next-scale", "0.89");
-        center.style.setProperty("--lyrics-next-opacity", "0.26");
-        center.style.setProperty("--lyrics-next-blur", "4.5px");
-        center.style.setProperty("--lyrics-far-opacity", "0.16");
-        return;
+      const positions = linePositionsRef.current;
+      const currentPosition = lineIndex >= 0 ? positions[lineIndex] ?? 0 : 0;
+      const upcoming = lineIndex >= 0 ? NUMBER_ONE_LYRICS[lineIndex + 1] : undefined;
+      let progress = 0;
+
+      if (upcoming && !reduceMotion) {
+        const currentStart = NUMBER_ONE_LYRICS[lineIndex].start;
+        const interval = Math.max(0.12, upcoming.start - currentStart);
+        const transitionDuration = Math.min(0.95, Math.max(0.48, interval * 0.24));
+        const transitionStart = upcoming.start - transitionDuration;
+        progress = smoothstep((time - transitionStart) / transitionDuration);
       }
-      const currentStart = lineIndex >= 0 ? NUMBER_ONE_LYRICS[lineIndex].start : 0;
-      const distance = Math.max(0.12, upcoming.start - currentStart);
-      const transitionDuration = Math.min(0.62, distance);
-      const transitionStart = upcoming.start - transitionDuration;
-      const progress = Math.min(1, Math.max(0, (time - transitionStart) / transitionDuration));
-      center.style.setProperty("--lyrics-shift", `${(nextDistanceRef.current * progress).toFixed(2)}px`);
-      center.style.setProperty("--lyrics-current-scale", (1.12 - progress * 0.12).toFixed(3));
-      center.style.setProperty("--lyrics-current-opacity", (1 - progress * 0.45).toFixed(3));
-      center.style.setProperty("--lyrics-current-blur", `${(progress * 2.2).toFixed(2)}px`);
-      center.style.setProperty("--lyrics-previous-scale", (0.91 - progress * 0.04).toFixed(3));
-      center.style.setProperty("--lyrics-previous-opacity", (0.42 - progress * 0.14).toFixed(3));
-      center.style.setProperty("--lyrics-previous-blur", `${(3.6 + progress * 1.2).toFixed(2)}px`);
-      center.style.setProperty("--lyrics-next-scale", (0.89 + progress * 0.23).toFixed(3));
-      center.style.setProperty("--lyrics-next-opacity", (0.26 + progress * 0.74).toFixed(3));
-      center.style.setProperty("--lyrics-next-blur", `${(4.5 * (1 - progress)).toFixed(2)}px`);
-      center.style.setProperty("--lyrics-far-opacity", (0.16 + progress * 0.04).toFixed(3));
+
+      const nextPosition = upcoming ? positions[lineIndex + 1] ?? currentPosition : currentPosition;
+      const scrollPosition = currentPosition + (nextPosition - currentPosition) * progress;
+      list.style.transform = `translate3d(0, -${scrollPosition.toFixed(2)}px, 0)`;
+
+      const focusPosition = lineIndex >= 0 ? lineIndex + progress : -0.62;
+      const visibleStart = Math.max(0, Math.floor(focusPosition) - 9);
+      const visibleEnd = Math.min(NUMBER_ONE_LYRICS.length, Math.ceil(focusPosition) + 11);
+
+      for (let index = visibleStart; index < visibleEnd; index += 1) {
+        const node = lineNodesRef.current[index];
+        if (!node) continue;
+        const distance = Math.abs(index - focusPosition);
+        const focus = Math.max(0, 1 - distance / 3.1);
+        const opacity = 0.22 + focus * 0.78;
+        const blur = (1 - focus) * 6.5;
+        const scale = 0.985 + focus * 0.015;
+
+        node.style.setProperty("--line-opacity", opacity.toFixed(3));
+        node.style.setProperty("--line-blur", `${blur.toFixed(2)}px`);
+        node.style.setProperty("--line-scale", scale.toFixed(3));
+      }
     };
 
-    const updateFromAudio = (forceWordSync = false) => {
+    const updateFromAudio = () => {
       const time = audio.currentTime;
       const nextCue = cueAt(time);
       if (nextCue !== activeIndexRef.current) {
         activeIndexRef.current = nextCue;
-        activeWordIndexRef.current = -1;
         setActiveIndex(nextCue);
-      }
-
-      const line = NUMBER_ONE_LYRICS[nextCue];
-      const currentWordIndex = renderedIndexRef.current === nextCue ? wordAt(nextCue, time) : -1;
-      if (line && renderedIndexRef.current === nextCue) {
-        if (forceWordSync) {
-          line.words.forEach((word, index) => {
-            const state = time >= word.end ? "past" : time >= word.start ? "active" : "future";
-            setWordClass(wordNodesRef.current[index] ?? null, state);
-          });
-          activeWordIndexRef.current = currentWordIndex;
-        } else if (currentWordIndex !== activeWordIndexRef.current) {
-          const previousIndex = activeWordIndexRef.current;
-          if (previousIndex >= 0) {
-            const previousWord = line.words[previousIndex];
-            setWordClass(wordNodesRef.current[previousIndex] ?? null, time >= previousWord.end ? "past" : "future");
-          }
-          if (currentWordIndex >= 0) setWordClass(wordNodesRef.current[currentWordIndex] ?? null, "active");
-          activeWordIndexRef.current = currentWordIndex;
-        }
       }
 
       const safeDuration = duration > 0 ? duration : audio.duration;
       const trackProgress = Number.isFinite(safeDuration) && safeDuration > 0
         ? Math.min(1, Math.max(0, time / safeDuration))
         : 0;
-      if (progressRef.current) progressRef.current.style.transform = `scaleX(${trackProgress})`;
+      stageRef.current?.style.setProperty("--track-progress", trackProgress.toFixed(4));
       updateConveyor(time, nextCue);
     };
 
@@ -183,88 +120,71 @@ function AnimatedLyrics({ audioRef, duration, isPlaying }: AnimatedLyricsProps) 
       updateFromAudio();
       animationFrame = window.requestAnimationFrame(tick);
     };
-    const handleSeek = () => updateFromAudio(true);
-    const handleTimeUpdate = () => updateFromAudio();
     const handlePlay = () => {
-      updateFromAudio(true);
+      updateFromAudio();
       if (!audio.paused) animationFrame = window.requestAnimationFrame(tick);
     };
     const handlePause = () => {
       window.cancelAnimationFrame(animationFrame);
-      updateFromAudio(true);
+      updateFromAudio();
+    };
+    const handleReducedMotionChange = (event: MediaQueryListEvent) => {
+      reduceMotion = event.matches;
+      updateFromAudio();
     };
 
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("seeking", handleSeek);
-    audio.addEventListener("seeked", handleSeek);
+    audio.addEventListener("timeupdate", updateFromAudio);
+    audio.addEventListener("seeking", updateFromAudio);
+    audio.addEventListener("seeked", updateFromAudio);
     audio.addEventListener("play", handlePlay);
     audio.addEventListener("pause", handlePause);
-    audio.addEventListener("loadedmetadata", handleSeek);
-    updateFromAudio(true);
+    audio.addEventListener("loadedmetadata", updateFromAudio);
+    reducedMotionQuery.addEventListener("change", handleReducedMotionChange);
+    updateFromAudio();
     if (isPlaying && !audio.paused) animationFrame = window.requestAnimationFrame(tick);
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("seeking", handleSeek);
-      audio.removeEventListener("seeked", handleSeek);
+      audio.removeEventListener("timeupdate", updateFromAudio);
+      audio.removeEventListener("seeking", updateFromAudio);
+      audio.removeEventListener("seeked", updateFromAudio);
       audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("pause", handlePause);
-      audio.removeEventListener("loadedmetadata", handleSeek);
+      audio.removeEventListener("loadedmetadata", updateFromAudio);
+      reducedMotionQuery.removeEventListener("change", handleReducedMotionChange);
     };
   }, [audioRef, duration, isPlaying]);
 
+  const activeLine = activeIndex >= 0 ? NUMBER_ONE_LYRICS[activeIndex] : undefined;
+
   return (
     <div
+      ref={stageRef}
       className="mom-lyrics-stage"
       role="group"
       data-playing={isPlaying}
       aria-label="Lirik Number One For Me yang tersinkron dengan lagu"
     >
-      <div className="mom-lyrics-topline" aria-hidden="true">
-        <span>FOR MOM / NUMBER ONE FOR ME</span>
+      <span className="mom-lyrics-handle" aria-hidden="true" />
+      <div className="mom-lyrics-track-meta">
+        <span className="mom-album-mark" aria-hidden="true">MZ</span>
+        <div>
+          <p className="mom-lyrics-track-title">Number One For Me</p>
+          <p className="mom-lyrics-track-artist">Maher Zain</p>
+        </div>
       </div>
-      <div ref={centerRef} className="mom-lyrics-center">
-        {previousFar && (
-          <p key={`previous-far-${previousFar.start}`} ref={previousFarRef} className="mom-lyrics-line mom-lyrics-line--previous-far" aria-hidden="true">
-            {previousFar.text}
-          </p>
-        )}
-        {previousNear && (
-          <p key={`previous-near-${previousNear.start}`} ref={previousNearRef} className="mom-lyrics-line mom-lyrics-line--previous-near" aria-hidden="true">
-            {previousNear.text}
-          </p>
-        )}
-        {activeLine ? (
-          <p key={`active-${activeIndex}`} ref={currentRef} className="mom-lyrics-line mom-lyrics-line--current" aria-hidden="true">
-            {activeLine.words.map((word, index) => (
-              <span
-                className="mom-lyric-word mom-lyric-word--future"
-                key={`${word.start}-${index}`}
-                ref={(node) => { wordNodesRef.current[index] = node; }}
-              >
-                {word.text}
-              </span>
-            ))}
-          </p>
-        ) : (
-          <p ref={currentRef} className="mom-lyrics-line mom-lyrics-line--current mom-lyrics-line--intro" aria-hidden="true">
-            A song, a memory, a love that stays.
-          </p>
-        )}
-        {nextNear && (
-          <p key={`next-near-${nextNear.start}`} ref={nextNearRef} className="mom-lyrics-line mom-lyrics-line--next-near" aria-hidden="true">
-            {nextNear.text}
-          </p>
-        )}
-        {nextFar && (
-          <p key={`next-far-${nextFar.start}`} ref={nextFarRef} className="mom-lyrics-line mom-lyrics-line--next-far" aria-hidden="true">
-            {nextFar.text}
-          </p>
-        )}
-      </div>
-      <div className="mom-lyrics-progress" aria-hidden="true">
-        <span ref={progressRef} />
+      <div className="mom-lyrics-viewport" aria-hidden="true">
+        <div ref={listRef} className="mom-lyrics-list">
+          {NUMBER_ONE_LYRICS.map((line, index) => (
+            <p
+              key={`${line.start}-${index}`}
+              ref={(node) => { lineNodesRef.current[index] = node; }}
+              className="mom-lyrics-line"
+            >
+              {line.text}
+            </p>
+          ))}
+        </div>
       </div>
       <p className="mom-sr-only" aria-live="polite" aria-atomic="true">
         {activeLine?.text ?? "The song is about to begin."}
