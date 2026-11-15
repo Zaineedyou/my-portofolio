@@ -1,6 +1,5 @@
-import { lazy, Suspense, useRef, useState, type ChangeEvent } from "react";
-
-const Gramophone3D = lazy(() => import("./Gramophone3D"));
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import AnimatedLyrics from "./AnimatedLyrics";
 
 const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.ogg";
 
@@ -17,6 +16,19 @@ export default function ForMomPage() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playerError, setPlayerError] = useState("");
+
+  useEffect(() => {
+    if (!isPlaying) return undefined;
+    let animationFrame = 0;
+    const updatePlaybackClock = () => {
+      const audio = audioRef.current;
+      if (!audio || audio.paused) return;
+      setCurrentTime(audio.currentTime);
+      animationFrame = window.requestAnimationFrame(updatePlaybackClock);
+    };
+    animationFrame = window.requestAnimationFrame(updatePlaybackClock);
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [isPlaying]);
 
   const togglePlayback = async () => {
     const audio = audioRef.current;
@@ -61,9 +73,7 @@ export default function ForMomPage() {
           </div>
 
           <section className="mom-player" aria-label="Music player">
-            <Suspense fallback={<div className="mom-gramophone-stage" aria-hidden="true" />}>
-              <Gramophone3D isPlaying={isPlaying} />
-            </Suspense>
+            <AnimatedLyrics currentTime={currentTime} duration={duration} isPlaying={isPlaying} />
 
             <div className="mom-player-info">
               <div className="mom-track-heading">
@@ -107,7 +117,7 @@ export default function ForMomPage() {
                 ref={audioRef}
                 className="mom-audio"
                 preload="metadata"
-                aria-label="Number One For Me by Maher Zain, excerpt from 0:07 to 4:22"
+                aria-label="Number One For Me by Maher Zain"
                 onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
                 onLoadedMetadata={(event) => syncDuration(event.currentTarget)}
                 onDurationChange={(event) => syncDuration(event.currentTarget)}
@@ -153,7 +163,6 @@ export default function ForMomPage() {
           <a className="mom-back-link" href="#top">Kembali ke portofolio</a>
           <span>{new Date().getFullYear()} / Halaman untuk Ibu</span>
         </footer>
-
       </div>
     </main>
   );
