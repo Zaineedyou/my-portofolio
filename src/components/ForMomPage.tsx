@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 import AnimatedLyrics from "./AnimatedLyrics";
 
 const AUDIO_SRC = "/audio/Number%20One%20For%20Me-Maher%20Zain.ogg";
@@ -16,19 +16,6 @@ export default function ForMomPage() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playerError, setPlayerError] = useState("");
-
-  useEffect(() => {
-    if (!isPlaying) return undefined;
-    let animationFrame = 0;
-    const updatePlaybackClock = () => {
-      const audio = audioRef.current;
-      if (!audio || audio.paused) return;
-      setCurrentTime(audio.currentTime);
-      animationFrame = window.requestAnimationFrame(updatePlaybackClock);
-    };
-    animationFrame = window.requestAnimationFrame(updatePlaybackClock);
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, [isPlaying]);
 
   const togglePlayback = async () => {
     const audio = audioRef.current;
@@ -73,7 +60,7 @@ export default function ForMomPage() {
           </div>
 
           <section className="mom-player" aria-label="Music player">
-            <AnimatedLyrics currentTime={currentTime} duration={duration} isPlaying={isPlaying} />
+            <AnimatedLyrics audioRef={audioRef} duration={duration} isPlaying={isPlaying} />
 
             <div className="mom-player-info">
               <div className="mom-track-heading">
