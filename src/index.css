@@ -727,11 +727,26 @@ button { color: inherit; }
   display: inline-block;
   margin-right: .18em;
   color: rgba(255, 255, 255, .30);
-  transition: color .18s linear;
+  transform: scale(var(--lyric-word-scale, 1));
+  transform-origin: center bottom;
+  transition: color .18s linear, transform .09s ease-out;
 }
 .mom-lyric-word--future { color: rgba(255, 255, 255, .30); }
 .mom-lyric-word--past { color: rgba(255, 255, 255, .96); }
-.mom-lyric-word--active { color: #fff; }
+.mom-lyric-word--active {
+  color: transparent;
+  background-image: linear-gradient(
+    to right,
+    #fff 0,
+    #fff calc(var(--lyric-word-sweep, 0%) - 8%),
+    rgba(255, 255, 255, .64) var(--lyric-word-sweep, 0%),
+    rgba(255, 255, 255, .30) calc(var(--lyric-word-sweep, 0%) + 8%),
+    rgba(255, 255, 255, .30) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .mom-lyrics-line--intro { color: rgba(255, 255, 255, .9); }
 .mom-lyrics-progress {
   position: absolute;
@@ -767,72 +782,4 @@ button { color: inherit; }
   .mom-lyrics-stage::before,
   .mom-lyrics-stage::after { transition-duration: .01ms !important; }
   .mom-lyrics-stage[data-playing="true"] .mom-lyrics-line { will-change: auto; }
-}
-
-
-/* Lyric-only motion: active line, readable preview, then progressive depth blur. */
-.mom-lyrics-flow-viewport {
-  inset: 10% 0 4%;
-  text-align: left;
-}
-.mom-lyrics-flow {
-  position: relative;
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  gap: clamp(12px, 2.4vw, 18px);
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-}
-.mom-lyrics-flow-row {
-  --flow-opacity: .18;
-  --flow-blur: 8px;
-  --flow-scale: .9;
-  --flow-ink: rgba(255, 255, 255, .36);
-  position: relative;
-  flex: none;
-  width: 100%;
-  max-width: 30ch;
-  margin: 0;
-  color: var(--flow-ink);
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: clamp(17px, 3.5vw, 21px);
-  font-weight: 600;
-  line-height: 1.28;
-  letter-spacing: -.018em;
-  text-align: left;
-  text-wrap: pretty;
-  opacity: var(--flow-opacity);
-  filter: blur(var(--flow-blur));
-  transform: translateZ(0) scale(var(--flow-scale));
-  transform-origin: left center;
-  backface-visibility: hidden;
-}
-.mom-lyrics-flow .mom-lyric-word {
-  margin-right: 0;
-  color: inherit;
-  white-space: nowrap;
-}
-.mom-lyric-char {
-  display: inline-block;
-  color: inherit;
-  transform: scale(1);
-  transform-origin: center bottom;
-  transition: color 45ms linear;
-}
-.mom-lyrics-stage[data-playing="true"] .mom-lyrics-flow-row {
-  will-change: transform, opacity, filter;
-}
-.mom-lyrics-stage[data-playing="false"] .mom-lyrics-flow-row {
-  will-change: auto;
-}
-@media (max-width: 420px) {
-  .mom-lyrics-flow-viewport { inset: 10% 0 3%; }
-  .mom-lyrics-flow { gap: 13px; }
-  .mom-lyrics-flow-row { font-size: 17px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mom-lyrics-flow,
-  .mom-lyrics-flow-row,
-  .mom-lyric-char { will-change: auto !important; }
 }
